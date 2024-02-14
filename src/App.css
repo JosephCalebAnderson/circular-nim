@@ -24,6 +24,15 @@
   color: white;
 }
 
+.stone {
+  background-color: lightblue;
+  color: black;
+  border-radius: 50%;
+  border: 5px solid;
+  border-color: black;
+  padding: 50px 50px;
+}
+
 .App-link {
   color: #61dafb;
 }
