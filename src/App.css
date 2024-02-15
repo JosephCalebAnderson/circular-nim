@@ -33,6 +33,14 @@
   padding: 50px 50px;
 }
 
+.selectedSeat {
+  background-color: green;
+}
+
+.takenSeat {
+  background-color: black;
+}
+
 .App-link {
   color: #61dafb;
 }
