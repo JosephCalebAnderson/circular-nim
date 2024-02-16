@@ -429,6 +429,9 @@ function App() {
     for (let remaining = 0; remaining < cgs.length; remaining++) {
       currentDifferences.push(cgs[remaining]);
     }
+    if (desiredDifferences.length == 0) {
+      desiredDifferences.push(0);
+    }
     console.log(desiredDifferences);
     console.log(currentDifferences);
   }
