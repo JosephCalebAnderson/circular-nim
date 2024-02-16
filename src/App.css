@@ -25,20 +25,50 @@
 }
 
 .stone {
-  background-color: lightblue;
+  background-color: lightgray;
   color: black;
   border-radius: 50%;
   border: 5px solid;
   border-color: black;
   padding: 50px 50px;
+  transition-duration: 0.4s;
 }
 
-.selectedSeat {
+.stone:hover {
+  background-color: gray; /* Green */
+}
+
+.selectedStone {
+  background-color: lightgreen;
+}
+
+.selectedStone:hover {
   background-color: green;
 }
 
-.takenSeat {
+.takenStone {
   background-color: black;
+}
+
+.takenStone:hover {
+  background-color: black;
+}
+
+.selection {
+  background-color: lightgray;
+  font-size: medium;
+  color: black;
+  border: 5px solid;
+  border-color: black;
+  padding: 10px 10px;
+}
+
+.p1 {
+  color: red;
+}
+
+.p2 {
+  color: blue;
 }
 
 .App-link {
