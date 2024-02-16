@@ -10,11 +10,11 @@ function App() {
   const [turnPrompt, setTurnPrompt] = useState("Player 1");
   const [isPlayer1Turn, setIsPlayer1Turn] = useState(true);
   const [isGameOver, setIsGameOver] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [adjacenyObjs, setAdjacencyObjs] = useState([]);
   const stoneElements = [];
   // Change this to change the size of the circle
-  const size = 15;
-  var gameOver = false;
+  const size = 21;
 
   for (let stoneNum = 1; stoneNum <= size; stoneNum++) {
     const stoneId = `${stoneNum}`;
@@ -34,6 +34,7 @@ function App() {
   }
 
   const handleStoneClick = (stoneId) => {
+    console.log(stoneId);
     const isSelected = selectedStones.includes(stoneId);
     const isAvailable = !removedStones.includes(stoneId);
 
@@ -56,7 +57,11 @@ function App() {
     }
   };
 
-  const handleSelectionConfirmation = () => {
+  function timeout(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  const handleSelectionConfirmation = async () => {
     if (numStonesSelected > 0) {
       setRemovedStones([...removedStones, ...selectedStones]);
       setSelectedStones([]);
@@ -65,15 +70,25 @@ function App() {
         setTurnPrompt("Player 1");
         setIsPlayer1Turn(true);
       } else {
-        setTurnPrompt("Player 2");
+        setTurnPrompt("CPU");
         setIsPlayer1Turn(false);
       }
     }
     let removingArr = [...removedStones, ...selectedStones]
     let gameState = getGameState(removingArr);
     let newGameState = getPerfectPlayMove(adjacenyObjs, gameState);
-    console.log(newGameState);
-    makeCPUMove(newGameState, gameState);
+    // remove the following lines to make it player vs player, as well as change line 69 to 'Player 2'
+    setIsLoading(true);
+    await timeout(1000);
+    makeCPUMove(newGameState, gameState, removingArr);
+    if (removedStones.length + selectedStones.length !== size) {
+      setTurnPrompt("Player 1");
+      setIsPlayer1Turn(true);
+    }
+    setSelectedStones([]);
+    setNumStonesSelected(0);
+    setIsLoading(false);
+    //makeCPUMove(newGameState, gameState, removingArr);
   }
 
   function getPartition(p, n) {
@@ -410,9 +425,14 @@ function App() {
     return -1;
   }
 
-  function makeCPUMove (desiredGameState, currentGameState) {
+  function makeCPUMove (desiredGameState, currentGameState, takenStoneArr) {
+    if (desiredGameState == null) {
+      return;
+    }
     let dgs = desiredGameState;
     let cgs = currentGameState;
+    let desiredSum = 0;
+    let currentSum = 0;
     let desiredDifferences = []
     let currentDifferences = []
     // First find the difference between the current state and the 
@@ -423,24 +443,59 @@ function App() {
         cgs.splice(index, 1);
       } else {
         desiredDifferences.push(dgs[0]);
+        desiredSum = desiredSum + dgs[0];
         dgs.splice(0,1);
       }
     }
     for (let remaining = 0; remaining < cgs.length; remaining++) {
       currentDifferences.push(cgs[remaining]);
+      currentSum = currentSum + cgs[remaining];
     }
     if (desiredDifferences.length == 0) {
       desiredDifferences.push(0);
     }
-    console.log(desiredDifferences);
-    console.log(currentDifferences);
+    // Now we need to find which stones result in currentDifference.
+    // Look at getGameState
+    let sortedRemovedStones = [];
+    for (let k = 0; k < takenStoneArr.length; k ++) {
+      sortedRemovedStones.push(parseInt(takenStoneArr[k]));
+    }
+    sortedRemovedStones = arrSort(sortedRemovedStones);
+    var startingStone = 0;
+    for (let i = 0; i < sortedRemovedStones.length - 1; i++) {
+      let difference = Math.abs(sortedRemovedStones[i + 1] - sortedRemovedStones[i]) - 1;
+      if (difference == currentDifferences[0]) {
+        startingStone = parseInt(sortedRemovedStones[i + 1]);
+      }
+    }
+    if (startingStone == 0) {
+      startingStone = parseInt(sortedRemovedStones[0]);
+    }
+      startingStone = startingStone + parseInt(desiredDifferences[0]) + 1;
+      if (startingStone > size) {
+        startingStone = startingStone - size;
+      }
+      let additionalStone = startingStone + 1;
+      if (additionalStone > size) {
+        additionalStone = additionalStone - size;
+      }
+      if (currentSum - desiredSum == 2) {
+        console.log("Remove stones: " + startingStone + " " + additionalStone);
+        let startingStoneString = startingStone.toString();
+        let additionalStoneString = additionalStone.toString();
+        setRemovedStones([...removedStones, ...selectedStones, startingStoneString, additionalStoneString]);
+      } else {
+        console.log("Remove stones: " + startingStone);
+        let startingStoneString = startingStone.toString();
+        setRemovedStones([...removedStones, ...selectedStones, startingStoneString]);
+      }
   }
 
   useEffect(() => {
     if (removedStones.length === size) {
-      gameOver = true;
       setIsGameOver(true);
     }
+    console.log(removedStones);
     getGameState(removedStones);
   }, [removedStones]);
 
@@ -454,15 +509,18 @@ function App() {
     let objsWithMex = setMexValues(objArr, size);
     console.log('Mex Values Found.\n');
     setAdjacencyObjs(objsWithMex);
+    setIsLoading(false);
   }, []);
 
   // use perfectPlay, while losing choose the game state based on criteria when assigning next values.
   function getPerfectPlayMove(objList, gameState) {
     console.log(gameState);
     let index = searchGameObjects(objList, gameState);
-    console.log(index);
-    console.log(objList[index]);
+    if (index == -1) {
+      return null;
+    }
     let adjacentLocation = objList[index].next;
+    console.log(objList[index].adjacent[adjacentLocation]);
     return objList[index].adjacent[adjacentLocation];
   }
 
@@ -483,7 +541,6 @@ function App() {
       state.push(difference);
     }
     let gameState = arrSort(state);
-    console.log(gameState);
     return gameState;
   }
 
@@ -493,7 +550,7 @@ function App() {
         <div className="stones">
         {isGameOver && <h2 className={`prompt ${isPlayer1Turn ?  'p1' : 'p2'}`}>{turnPrompt} Wins!</h2>}
           {!isGameOver && <h3 className={`prompt ${isPlayer1Turn ?  'p1' : 'p2'}`}>{turnPrompt}'s Turn</h3>}
-          {!isGameOver && <btn className="selection" onClick = {() => handleSelectionConfirmation()}>Confirm Move</btn>}
+          {!isGameOver && !isLoading && <btn className="selection" onClick = {() => handleSelectionConfirmation()}>Confirm Move</btn>}
           {stoneElements}
         </div>
       </header>
