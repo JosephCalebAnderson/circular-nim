@@ -39,11 +39,11 @@ function App() {
 
     if (!isSelected && isAvailable && numStonesSelected < 2) {
       // Okay if the stone selected is right next to the one being selected.
-      if (selectedStones.length == 0 || 
-        Math.abs(selectedStones[0] - stoneId) == 1 ||
+      if (selectedStones.length === 0 || 
+        Math.abs(selectedStones[0] - stoneId) === 1 ||
         // The following are two special cases to allow the ends of the circle to be taken at the same time. 
-        selectedStones[0] == size && stoneId == 1 ||
-        selectedStones[0] == 1 && stoneId == size) {
+        (selectedStones[0] == size && stoneId == 1) ||
+        (selectedStones[0] == 1 && stoneId == size)) {
         setSelectedStones([...selectedStones, stoneId]);
         setNumStonesSelected(numStonesSelected + 1);
       } else {
@@ -73,22 +73,18 @@ function App() {
     let gameState = getGameState(removingArr);
     let newGameState = getPerfectPlayMove(adjacenyObjs, gameState);
     console.log(newGameState);
-    makeCPUMove(newGameState);
-  }
-
-  function makeCPUMove (desiredGameState) {
-
+    makeCPUMove(newGameState, gameState);
   }
 
   function getPartition(p, n) {
     let partition = [];
     for(let i = 0; i < n; i++) {
         let part = p[i] - 1;
-        if (part != 0) {
+        if (part !== 0) {
             partition.push(part);
         }
     }
-    if (partition.length == 0) {
+    if (partition.length === 0) {
         partition.push(0);
     }    
     return partition;
@@ -128,7 +124,7 @@ function App() {
           // accommodated
           let rem_val = 0;
             
-          while (k >= 0 && p[k] == 1) {
+          while (k >= 0 && p[k] === 1) {
               rem_val += p[k];
               k--;
           }
@@ -167,7 +163,7 @@ function App() {
       var gameStatesArray = [];
       // i loop tracks which string is getting split
       for (let i = 0; i < currentStateArray.length; i ++) {
-          if (currentStateArray[i] != currentStateArray[i+1]) {
+          if (currentStateArray[i] !== currentStateArray[i+1]) {
               // j value tracks how much to split the given value
               for (let j = 1; j <= (currentStateArray[i] + 1)/2; j ++) {
                   // size of the new stack that will be formed after the split
@@ -176,17 +172,17 @@ function App() {
                   let newArray = []
                   // push all of the positive values into the new array
                   for (let k = 0; k < currentStateArray.length; k ++) {
-                      if (currentStateArray[k] != 0) {
+                      if (currentStateArray[k] !== 0) {
                           newArray.push(currentStateArray[k]);
                       }
                   }
                   // perform the split on the selected value
                   newArray[i] = currentStateArray[i] - j;
-                  if (newArray[i] == 0 && newArray.length > 1) {
+                  if (newArray[i] === 0 && newArray.length > 1) {
                       newArray.splice(i,1);
                   }
                   // push the new stack if it is a positive value
-                  if (newStack != 0) {
+                  if (newStack !== 0) {
                       newArray.push(newStack);
                   }
                   // sort the new array in descending order and print it
@@ -204,7 +200,7 @@ function App() {
       var gameStatesArray = [];
       // i loop tracks which string is getting split
       for (let i = 0; i < currentStateArray.length; i ++) {
-          if (currentStateArray[i] != currentStateArray[i+1]) {
+          if (currentStateArray[i] !== currentStateArray[i+1]) {
               // j value tracks how much to split the given value
               for (let j = 1; j <= (currentStateArray[i] + 1)/2; j ++) {
                   // size of the new stack that will be formed after the split
@@ -213,17 +209,17 @@ function App() {
                   let newArray = []
                   // push all of the positive values into the new array
                   for (let k = 0; k < currentStateArray.length; k ++) {
-                      if (currentStateArray[k] != 0) {
+                      if (currentStateArray[k] !== 0) {
                           newArray.push(currentStateArray[k]);
                       }
                   }
                   // perform the split on the selected value
                   newArray[i] = currentStateArray[i] - j;
-                  if (newArray[i] == 0 && newArray.length > 1) {
+                  if (newArray[i] === 0 && newArray.length > 1) {
                       newArray.splice(i,1);
                   }
                   // push the new stack if it is a positive value
-                  if (newStack != 0) {
+                  if (newStack !== 0) {
                       newArray.push(newStack);
                   }
                   // sort the new array in descending order and print it
@@ -235,7 +231,7 @@ function App() {
       }
       //This is meant to count moves that take 2 stones.
       for (let l = 0; l < currentStateArray.length; l ++) {
-          if (currentStateArray[l] != currentStateArray[l+1]) {
+          if (currentStateArray[l] !== currentStateArray[l+1]) {
               // j value tracks how much to split the given value
               for (let m = 1; m <= (currentStateArray[l])/2; m ++) {
                   // size of the new stack that will be formed after the split
@@ -244,13 +240,13 @@ function App() {
                   let newArray = []
                   // push all of the positive values into the new array
                   for (let n = 0; n < currentStateArray.length; n ++) {
-                      if (currentStateArray[n] != 0) {
+                      if (currentStateArray[n] !== 0) {
                           newArray.push(currentStateArray[n]);
                       }
                   }
                   // perform the split on the selected value
                   newArray[l] = currentStateArray[l] - m - 1;
-                  if (newArray[l] == 0 && newArray.length > 1) {
+                  if (newArray[l] === 0 && newArray.length > 1) {
                       newArray.splice(l,1);
                   }
                   // push the new stack if it is a positive value
@@ -333,7 +329,7 @@ function App() {
               // Check to see if a state exists in an array
                 let index = searchForArray(adjObjsArr[currState].adjacent, adjObjsArr[tester].current);
                 // If the testing state is an adjacent state do the following
-              if (index != -1) {
+              if (index !== -1) {
                   // only push to the adjacency matrix if it is a new mex value
                   if (!adjMex.includes(adjObjsArr[tester].mex)) {
                       adjMex.push(adjObjsArr[tester].mex);
@@ -343,12 +339,12 @@ function App() {
                       }
                   }
                   // if a mex value of 0 is found update the 'next' value with this index.
-                  if (adjObjsArr[tester].mex == 0) {
+                  if (adjObjsArr[tester].mex === 0) {
                       adjObjsArr[currState].next = index;
                   }
                   count = count + 1;
                   // if all adjacent states have been found then we can stop searching.
-                  if (count == adjNum) {
+                  if (count === adjNum) {
                       tester = length;
                   }
               }
@@ -362,7 +358,7 @@ function App() {
           }
           // CHANGE TO UPDATE WHAT TO DO WHEN PLACED IN A LOSING POSITION
           // Update the next value with the adjacent state with the largest index.
-          if (adjObjsArr[currState].mex == 0) {
+          if (adjObjsArr[currState].mex === 0) {
               // The following would be used to pick a random one stone move.
               let oneStoneMoves = getAdjSingleStoneMoves(adjObjsArr[currState].current);
               let amount = oneStoneMoves.length;
@@ -393,7 +389,7 @@ function App() {
           mex: value,
           next: 0
       }
-      if (adjObjsArr[1].mex == 0) {
+      if (adjObjsArr[1].mex === 0) {
           obj.next = 1;
       }
       adjObjsArr.unshift(obj);
@@ -414,12 +410,31 @@ function App() {
     return -1;
   }
 
-  function makeCPUMove (desiredGameState) {
-
+  function makeCPUMove (desiredGameState, currentGameState) {
+    let dgs = desiredGameState;
+    let cgs = currentGameState;
+    let desiredDifferences = []
+    let currentDifferences = []
+    // First find the difference between the current state and the 
+    for (let stack = 0; stack < dgs.length;) {
+      let index = currentGameState.indexOf(dgs[0]);
+      if (index != -1) {
+        dgs.splice(0, 1);
+        cgs.splice(index, 1);
+      } else {
+        desiredDifferences.push(dgs[0]);
+        dgs.splice(0,1);
+      }
+    }
+    for (let remaining = 0; remaining < cgs.length; remaining++) {
+      currentDifferences.push(cgs[remaining]);
+    }
+    console.log(desiredDifferences);
+    console.log(currentDifferences);
   }
 
   useEffect(() => {
-    if (removedStones.length == size) {
+    if (removedStones.length === size) {
       gameOver = true;
       setIsGameOver(true);
     }
@@ -453,7 +468,7 @@ function App() {
     let state = [];
     for (let i = 0; i < sortedRemovedStones.length - 1; i++) {
       let difference = Math.abs(sortedRemovedStones[i + 1] - sortedRemovedStones[i]) - 1;
-      if (difference != 0) {
+      if (difference !== 0) {
         state.push(difference);
       }
     }
@@ -461,7 +476,7 @@ function App() {
     for (let j = 0; j < state.length; j ++) {
       difference = difference - state[j];
     }
-    if (difference != 0) {
+    if (difference !== 0) {
       state.push(difference);
     }
     let gameState = arrSort(state);
