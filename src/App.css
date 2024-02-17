@@ -63,6 +63,25 @@
   padding: 10px 10px;
 }
 
+.Game-option {
+  background-color: lightgray;
+  font-size: medium;
+  color: black;
+  border: 5px solid;
+  border-color: black;
+  padding: 10px 10px;
+}
+
+.Size-change {
+  font-size: xx-large;
+  background-color: lightgray;
+  font-size: medium;
+  color: black;
+  border: 5px solid;
+  border-color: black;
+  padding: 10px 10px;
+}
+
 .p1 {
   color: red;
 }

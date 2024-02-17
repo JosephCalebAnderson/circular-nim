@@ -12,9 +12,13 @@ function App() {
   const [isGameOver, setIsGameOver] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [adjacenyObjs, setAdjacencyObjs] = useState([]);
+  const [isPreGame, setIsPreGame] = useState(true);
+  const [isPlayer1Human, setIsPlayer1Human] = useState();
+  const [isPlayer2Human, setIsPlayer2Human] = useState();
+  const [size, setSize] = useState(15);
   const stoneElements = [];
   // Change this to change the size of the circle
-  const size = 21;
+  //const size = 21;
 
   for (let stoneNum = 1; stoneNum <= size; stoneNum++) {
     const stoneId = `${stoneNum}`;
@@ -66,29 +70,51 @@ function App() {
       setRemovedStones([...removedStones, ...selectedStones]);
       setSelectedStones([]);
       setNumStonesSelected(0);
-      if (turnPrompt.includes('2')) {
+      if (!turnPrompt.includes('1')) {
         setTurnPrompt("Player 1");
         setIsPlayer1Turn(true);
       } else {
-        setTurnPrompt("CPU");
-        setIsPlayer1Turn(false);
+        if (isPlayer2Human) {
+          setTurnPrompt("Player 2");
+          setIsPlayer1Turn(false);
+        } else {
+          setTurnPrompt("CPU");
+          setIsPlayer1Turn(false);
+        }
+      }
+      if (!isPlayer2Human){
+        let removingArr = [...removedStones, ...selectedStones]
+        let gameState = getGameState(removingArr);
+        let newGameState = getPerfectPlayMove(adjacenyObjs, gameState);
+        console.log(gameState);
+        console.log(newGameState)
+        setIsLoading(true);
+        await timeout(1000);
+        makeCPUMove(newGameState, gameState, removingArr);
+        if (removedStones.length + selectedStones.length !== size) {
+          setTurnPrompt("Player 1");
+          setIsPlayer1Turn(true);
+        }
+        setSelectedStones([]);
+        setNumStonesSelected(0);
+        setIsLoading(false);
       }
     }
-    let removingArr = [...removedStones, ...selectedStones]
+  }
+
+  const handleSimulationMove = async () => {
+    let removingArr = [...removedStones];
     let gameState = getGameState(removingArr);
-    let newGameState = getPerfectPlayMove(adjacenyObjs, gameState);
-    // remove the following lines to make it player vs player, as well as change line 69 to 'Player 2'
-    setIsLoading(true);
-    await timeout(1000);
-    makeCPUMove(newGameState, gameState, removingArr);
-    if (removedStones.length + selectedStones.length !== size) {
-      setTurnPrompt("Player 1");
-      setIsPlayer1Turn(true);
+    if (gameState[0] == size) {
+      gameState = [size+'c'];
     }
-    setSelectedStones([]);
-    setNumStonesSelected(0);
+    let newGameState = getPerfectPlayMove(adjacenyObjs, gameState);
+    console.log(gameState);
+    console.log(newGameState)
+    makeCPUMove(newGameState, gameState, removingArr);
+    setIsLoading(true);
+    await timeout(100);
     setIsLoading(false);
-    //makeCPUMove(newGameState, gameState, removingArr);
   }
 
   function getPartition(p, n) {
@@ -425,6 +451,8 @@ function App() {
     return -1;
   }
 
+
+  // This currently does not work perfectly.
   function makeCPUMove (desiredGameState, currentGameState, takenStoneArr) {
     if (desiredGameState == null) {
       return;
@@ -461,7 +489,7 @@ function App() {
       sortedRemovedStones.push(parseInt(takenStoneArr[k]));
     }
     sortedRemovedStones = arrSort(sortedRemovedStones);
-    var startingStone = 0;
+    var startingStone = 1;
     for (let i = 0; i < sortedRemovedStones.length - 1; i++) {
       let difference = Math.abs(sortedRemovedStones[i + 1] - sortedRemovedStones[i]) - 1;
       if (difference == currentDifferences[0]) {
@@ -484,10 +512,12 @@ function App() {
         let startingStoneString = startingStone.toString();
         let additionalStoneString = additionalStone.toString();
         setRemovedStones([...removedStones, ...selectedStones, startingStoneString, additionalStoneString]);
+        return [...removedStones, ...selectedStones, startingStoneString, additionalStoneString];
       } else {
         console.log("Remove stones: " + startingStone);
         let startingStoneString = startingStone.toString();
         setRemovedStones([...removedStones, ...selectedStones, startingStoneString]);
+        return [...removedStones, ...selectedStones, startingStoneString];
       }
   }
 
@@ -495,8 +525,6 @@ function App() {
     if (removedStones.length === size) {
       setIsGameOver(true);
     }
-    console.log(removedStones);
-    getGameState(removedStones);
   }, [removedStones]);
 
   // Use Mex values to analyze perfect play for the CPU.
@@ -510,17 +538,19 @@ function App() {
     console.log('Mex Values Found.\n');
     setAdjacencyObjs(objsWithMex);
     setIsLoading(false);
-  }, []);
+  }, [isPreGame]);
+
+  useEffect(() => {
+
+  }, [isPreGame]);
 
   // use perfectPlay, while losing choose the game state based on criteria when assigning next values.
   function getPerfectPlayMove(objList, gameState) {
-    console.log(gameState);
     let index = searchGameObjects(objList, gameState);
     if (index == -1) {
       return null;
     }
     let adjacentLocation = objList[index].next;
-    console.log(objList[index].adjacent[adjacentLocation]);
     return objList[index].adjacent[adjacentLocation];
   }
 
@@ -544,14 +574,58 @@ function App() {
     return gameState;
   }
 
+  // Game option for player vs player
+  function handleGame1Click () {
+    
+    setIsPlayer1Human(true);
+    setIsPlayer2Human(true);
+    setIsPreGame(false);
+  }
+
+  // Game option for player vs computer
+  function handleGame2Click () {
+
+    setIsPlayer1Human(true);
+    setIsPlayer2Human(false);
+    setIsPreGame(false);
+  }
+
+  // Game option for computer vs computer
+  function handleGame3Click () {
+
+    setIsPlayer1Human(false);
+    setIsPlayer2Human(false);
+    setIsPreGame(false);
+  }
+
+  function increaseSize () {
+    if (size < 21) {
+      setSize(size + 1);
+    }
+  }
+
+  function decreaseSize () {
+    if (size > 9) {
+      setSize(size - 1);
+    }
+  }
+
   return (
     <div className="App">
       <header className="App-header">
+        {isPreGame && <h3 className = "Size-change" onClick = {() => increaseSize()}>Increase</h3>}
+        {isPreGame && <h3>Circle Size: {size}</h3>}
+        {isPreGame && <h3 className = "Size-change" onClick = {() => decreaseSize()}>Decrease</h3>}
+        {isPreGame && <h5>Which type of game would you like to play?</h5>}
+        {isPreGame && <btn className = "Game-option" onClick = {() => handleGame1Click()}>Player Vs Player</btn>}
+        {isPreGame && <btn className = "Game-option" onClick = {() => handleGame2Click()}>Player Vs Computer</btn>}
+        {isPreGame && <btn className = "Game-option" onClick = {() => handleGame3Click()}>Computer Vs Computer</btn>}
         <div className="stones">
         {isGameOver && <h2 className={`prompt ${isPlayer1Turn ?  'p1' : 'p2'}`}>{turnPrompt} Wins!</h2>}
-          {!isGameOver && <h3 className={`prompt ${isPlayer1Turn ?  'p1' : 'p2'}`}>{turnPrompt}'s Turn</h3>}
-          {!isGameOver && !isLoading && <btn className="selection" onClick = {() => handleSelectionConfirmation()}>Confirm Move</btn>}
-          {stoneElements}
+          {!isGameOver && !isPreGame && <h3 className={`prompt ${isPlayer1Turn ?  'p1' : 'p2'}`}>{turnPrompt}'s Turn</h3>}
+          {!isGameOver && !isPreGame && !isLoading && isPlayer1Human && <btn className="selection" onClick = {() => handleSelectionConfirmation()}>Confirm Move</btn>}
+          {!isGameOver && !isPreGame && !isLoading && !isPlayer1Human && <btn className="selection" onClick = {() => handleSimulationMove()}>Make CPU Move</btn>}
+          {!isPreGame && stoneElements}
         </div>
       </header>
     </div>
