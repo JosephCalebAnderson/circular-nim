@@ -20,12 +20,12 @@ function App() {
   // Change this to change the size of the circle
   //const size = 21;
 
+  // This for loop initializes the stone objects 
   for (let stoneNum = 1; stoneNum <= size; stoneNum++) {
+    // create a unique stoneID, and control placement + identifiers
     const stoneId = `${stoneNum}`;
     const isStoneSelected = selectedStones.includes(stoneId);
     const isStoneAvailable = !removedStones.includes(stoneId);
-
-      
     stoneElements.push(
       <btn
         style = {{ position: 'absolute', top: window.innerHeight/2 + 300 * Math.sin(stoneNum*2*Math.PI/size) - 50, right: window.innerWidth/2 + 300 * Math.cos(stoneNum*2*Math.PI/size) - 50}}
@@ -37,6 +37,7 @@ function App() {
       
   }
 
+  // handles a user clicking a stone during the game
   const handleStoneClick = (stoneId) => {
     console.log(stoneId);
     const isSelected = selectedStones.includes(stoneId);
@@ -61,10 +62,12 @@ function App() {
     }
   };
 
+  // Used to delay the cpu turns in certain game states
   function timeout(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
+  // This allows users to confirm their move within the game.
   const handleSelectionConfirmation = async () => {
     if (numStonesSelected > 0) {
       setRemovedStones([...removedStones, ...selectedStones]);
@@ -86,8 +89,6 @@ function App() {
         let removingArr = [...removedStones, ...selectedStones]
         let gameState = getGameState(removingArr);
         let newGameState = getPerfectPlayMove(adjacenyObjs, gameState);
-        console.log(gameState);
-        console.log(newGameState)
         setIsLoading(true);
         await timeout(1000);
         makeCPUMove(newGameState, gameState, removingArr);
@@ -102,6 +103,7 @@ function App() {
     }
   }
 
+  // Allows the cpu to make a move in a cpu vs cpu game
   const handleSimulationMove = async () => {
     let removingArr = [...removedStones];
     let gameState = getGameState(removingArr);
@@ -109,11 +111,15 @@ function App() {
       gameState = [size+'c'];
     }
     let newGameState = getPerfectPlayMove(adjacenyObjs, gameState);
-    console.log(gameState);
-    console.log(newGameState)
-    makeCPUMove(newGameState, gameState, removingArr);
     setIsLoading(true);
-    await timeout(100);
+    makeCPUMove(newGameState, gameState, removingArr);
+    if (turnPrompt.includes('1')) {
+      setTurnPrompt('CPU 2');
+      setIsPlayer1Turn(false);
+    } else {
+      setTurnPrompt('CPU 1');
+      setIsPlayer1Turn(true);
+    }
     setIsLoading(false);
   }
 
@@ -452,7 +458,7 @@ function App() {
   }
 
 
-  // This currently does not work perfectly.
+  // This function takes in information about the game and changes the UI according to perfect play by the cpu.
   function makeCPUMove (desiredGameState, currentGameState, takenStoneArr) {
     if (desiredGameState == null) {
       return;
@@ -463,7 +469,7 @@ function App() {
     let currentSum = 0;
     let desiredDifferences = []
     let currentDifferences = []
-    // First find the difference between the current state and the 
+    // First find the differences between the current state and the desired state
     for (let stack = 0; stack < dgs.length;) {
       let index = currentGameState.indexOf(dgs[0]);
       if (index != -1) {
@@ -483,21 +489,23 @@ function App() {
       desiredDifferences.push(0);
     }
     // Now we need to find which stones result in currentDifference.
-    // Look at getGameState
     let sortedRemovedStones = [];
     for (let k = 0; k < takenStoneArr.length; k ++) {
       sortedRemovedStones.push(parseInt(takenStoneArr[k]));
     }
     sortedRemovedStones = arrSort(sortedRemovedStones);
-    var startingStone = 1;
+    var startingStone = 0;
     for (let i = 0; i < sortedRemovedStones.length - 1; i++) {
       let difference = Math.abs(sortedRemovedStones[i + 1] - sortedRemovedStones[i]) - 1;
       if (difference == currentDifferences[0]) {
         startingStone = parseInt(sortedRemovedStones[i + 1]);
       }
     }
-    if (startingStone == 0) {
+    if (startingStone == 0 && sortedRemovedStones.length > 0) {
       startingStone = parseInt(sortedRemovedStones[0]);
+    }
+    if (startingStone == 0 && sortedRemovedStones.length == 0) {
+      startingStone = 1;
     }
       startingStone = startingStone + parseInt(desiredDifferences[0]) + 1;
       if (startingStone > size) {
@@ -507,6 +515,7 @@ function App() {
       if (additionalStone > size) {
         additionalStone = additionalStone - size;
       }
+      // Carry out the moves the cpu would like to make.
       if (currentSum - desiredSum == 2) {
         console.log("Remove stones: " + startingStone + " " + additionalStone);
         let startingStoneString = startingStone.toString();
@@ -520,7 +529,7 @@ function App() {
         return [...removedStones, ...selectedStones, startingStoneString];
       }
   }
-
+  // After each move, check to see if the game is over.
   useEffect(() => {
     if (removedStones.length === size) {
       setIsGameOver(true);
@@ -540,10 +549,6 @@ function App() {
     setIsLoading(false);
   }, [isPreGame]);
 
-  useEffect(() => {
-
-  }, [isPreGame]);
-
   // use perfectPlay, while losing choose the game state based on criteria when assigning next values.
   function getPerfectPlayMove(objList, gameState) {
     let index = searchGameObjects(objList, gameState);
@@ -553,7 +558,7 @@ function App() {
     let adjacentLocation = objList[index].next;
     return objList[index].adjacent[adjacentLocation];
   }
-
+  // Turn the UI into a game state that the cpu can understand.
   function getGameState(takenStoneArr) {
     let sortedRemovedStones = arrSort(takenStoneArr);
     let state = [];
@@ -576,7 +581,6 @@ function App() {
 
   // Game option for player vs player
   function handleGame1Click () {
-    
     setIsPlayer1Human(true);
     setIsPlayer2Human(true);
     setIsPreGame(false);
@@ -584,7 +588,6 @@ function App() {
 
   // Game option for player vs computer
   function handleGame2Click () {
-
     setIsPlayer1Human(true);
     setIsPlayer2Human(false);
     setIsPreGame(false);
@@ -592,7 +595,7 @@ function App() {
 
   // Game option for computer vs computer
   function handleGame3Click () {
-
+    setTurnPrompt("CPU 1");
     setIsPlayer1Human(false);
     setIsPlayer2Human(false);
     setIsPreGame(false);
@@ -610,6 +613,7 @@ function App() {
     }
   }
 
+  // This return statement places the HTML objects onto the web page.
   return (
     <div className="App">
       <header className="App-header">
