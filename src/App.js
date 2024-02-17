@@ -112,6 +112,8 @@ function App() {
     }
     let newGameState = getPerfectPlayMove(adjacenyObjs, gameState);
     setIsLoading(true);
+    setSelectedStones([]);
+    setNumStonesSelected(0);
     makeCPUMove(newGameState, gameState, removingArr);
     if (turnPrompt.includes('1')) {
       setTurnPrompt('CPU 2');
@@ -520,13 +522,11 @@ function App() {
         console.log("Remove stones: " + startingStone + " " + additionalStone);
         let startingStoneString = startingStone.toString();
         let additionalStoneString = additionalStone.toString();
-        setRemovedStones([...removedStones, ...selectedStones, startingStoneString, additionalStoneString]);
-        return [...removedStones, ...selectedStones, startingStoneString, additionalStoneString];
+        setRemovedStones([...takenStoneArr, startingStoneString, additionalStoneString]);
       } else {
         console.log("Remove stones: " + startingStone);
         let startingStoneString = startingStone.toString();
-        setRemovedStones([...removedStones, ...selectedStones, startingStoneString]);
-        return [...removedStones, ...selectedStones, startingStoneString];
+        setRemovedStones([...takenStoneArr, startingStoneString]);
       }
   }
   // After each move, check to see if the game is over.
