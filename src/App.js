@@ -15,6 +15,7 @@ function App() {
   const [isPlayer1Human, setIsPlayer1Human] = useState();
   const [isPlayer2Human, setIsPlayer2Human] = useState();
   const [size, setSize] = useState(15);
+  const [computerLogic, setComputerLogic] = useState("Perfect");
   const stoneElements = [];
   // Change this to change the size of the circle
   //const size = 21;
@@ -388,6 +389,7 @@ function App() {
     let objsWithMex = setMexValues(objArr, size);
     console.log('Mex Values Found.\n');
     setAdjacencyObjs(objsWithMex);
+    console.log(computerLogic);
     setIsLoading(false);
   }, [isPreGame]);
 
@@ -530,13 +532,13 @@ function App() {
   }
 
   function increaseSize () {
-    if (size < 21) {
+    if (size < 25) {
       setSize(size + 1);
     }
   }
 
   function decreaseSize () {
-    if (size > 9) {
+    if (size > 4) {
       setSize(size - 1);
     }
   }
@@ -608,7 +610,26 @@ function App() {
     if (gameState[0] == size) {
       gameState = [size+'c'];
     }
-    let newGameState = getPerfectPlayMove(adjacenyObjs, gameState);
+    let newGameState = null;
+    if (computerLogic === "Perfect") {
+      newGameState = getPerfectPlayMove(adjacenyObjs, gameState);
+    }
+    if (computerLogic === "Random") {
+      newGameState = getRandomMove(adjacenyObjs, gameState);
+    }
+    if (computerLogic === "Realistic") {
+      // Indicates an 85 percent chance of making the perfect move everytime.
+      // This will be changed later to better represent a human player.
+      let perfectProbability = 0.85;
+      let diceRoll = Math.random();
+      // Indicates the user should not play perfect.
+      if (diceRoll > perfectProbability) {
+        newGameState = getRandomMove(adjacenyObjs, gameState);
+        // Indicates the user should play perfect.
+      } else {
+        newGameState = getPerfectPlayMove(adjacenyObjs, gameState);
+      }
+    }
     setIsLoading(true);
     setSelectedStones([]);
     setNumStonesSelected(0);
@@ -634,6 +655,12 @@ function App() {
         {isPreGame && <btn className = "Game-option" onClick = {() => handleGame1Click()}>Player Vs Player</btn>}
         {isPreGame && <btn className = "Game-option" onClick = {() => handleGame2Click()}>Player Vs Computer</btn>}
         {isPreGame && <btn className = "Game-option" onClick = {() => handleGame3Click()}>Computer Vs Computer</btn>}
+        {isPreGame && <h5>Select Computer Difficulty Below:</h5>}
+        {isPreGame && <select value={computerLogic} onChange={(event) => setComputerLogic(event.target.value)}>
+        <option value="Perfect">Perfect</option> 
+        <option value="Random">Random</option> 
+        <option value="Realistic">Realistic</option> 
+        </select>}
         <div className="stones">
         {isGameOver && <h2 className={`prompt ${isPlayer1Turn ?  'p1' : 'p2'}`}>{turnPrompt} Wins!</h2>}
           {!isGameOver && !isPreGame && <h3 className={`prompt ${isPlayer1Turn ?  'p1' : 'p2'}`}>{turnPrompt}'s Turn</h3>}
