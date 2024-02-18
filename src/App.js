@@ -1,4 +1,3 @@
-import logo from './logo.svg';
 import './App.css';
 import React, { useEffect, useState } from 'react';
 
@@ -37,94 +36,7 @@ function App() {
       
   }
 
-  // handles a user clicking a stone during the game
-  const handleStoneClick = (stoneId) => {
-    console.log(stoneId);
-    const isSelected = selectedStones.includes(stoneId);
-    const isAvailable = !removedStones.includes(stoneId);
-
-    if (!isSelected && isAvailable && numStonesSelected < 2) {
-      // Okay if the stone selected is right next to the one being selected.
-      if (selectedStones.length === 0 || 
-        Math.abs(selectedStones[0] - stoneId) === 1 ||
-        // The following are two special cases to allow the ends of the circle to be taken at the same time. 
-        (selectedStones[0] == size && stoneId == 1) ||
-        (selectedStones[0] == 1 && stoneId == size)) {
-        setSelectedStones([...selectedStones, stoneId]);
-        setNumStonesSelected(numStonesSelected + 1);
-      } else {
-        //Illegal move, can add error message here if needed.
-      }
-    } else if (isSelected) {
-      const updatedSeats = selectedStones.filter((seat) => seat !== stoneId);
-      setSelectedStones(updatedSeats);
-      setNumStonesSelected(numStonesSelected - 1);
-    }
-  };
-
-  // Used to delay the cpu turns in certain game states
-  function timeout(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
-
-  // This allows users to confirm their move within the game.
-  const handleSelectionConfirmation = async () => {
-    if (numStonesSelected > 0) {
-      setRemovedStones([...removedStones, ...selectedStones]);
-      setSelectedStones([]);
-      setNumStonesSelected(0);
-      if (!turnPrompt.includes('1')) {
-        setTurnPrompt("Player 1");
-        setIsPlayer1Turn(true);
-      } else {
-        if (isPlayer2Human) {
-          setTurnPrompt("Player 2");
-          setIsPlayer1Turn(false);
-        } else {
-          setTurnPrompt("CPU");
-          setIsPlayer1Turn(false);
-        }
-      }
-      if (!isPlayer2Human){
-        let removingArr = [...removedStones, ...selectedStones]
-        let gameState = getGameState(removingArr);
-        let newGameState = getPerfectPlayMove(adjacenyObjs, gameState);
-        setIsLoading(true);
-        await timeout(1000);
-        makeCPUMove(newGameState, gameState, removingArr);
-        if (removedStones.length + selectedStones.length !== size) {
-          setTurnPrompt("Player 1");
-          setIsPlayer1Turn(true);
-        }
-        setSelectedStones([]);
-        setNumStonesSelected(0);
-        setIsLoading(false);
-      }
-    }
-  }
-
-  // Allows the cpu to make a move in a cpu vs cpu game
-  const handleSimulationMove = async () => {
-    let removingArr = [...removedStones];
-    let gameState = getGameState(removingArr);
-    if (gameState[0] == size) {
-      gameState = [size+'c'];
-    }
-    let newGameState = getPerfectPlayMove(adjacenyObjs, gameState);
-    setIsLoading(true);
-    setSelectedStones([]);
-    setNumStonesSelected(0);
-    makeCPUMove(newGameState, gameState, removingArr);
-    if (turnPrompt.includes('1')) {
-      setTurnPrompt('CPU 2');
-      setIsPlayer1Turn(false);
-    } else {
-      setTurnPrompt('CPU 1');
-      setIsPlayer1Turn(true);
-    }
-    setIsLoading(false);
-  }
-
+  // Here is the start of functions that initialize the game before any moves are made.
   function getPartition(p, n) {
     let partition = [];
     for(let i = 0; i < n; i++) {
@@ -459,6 +371,50 @@ function App() {
     return -1;
   }
 
+  // After each move, check to see if the game is over.
+  useEffect(() => {
+    if (removedStones.length === size) {
+      setIsGameOver(true);
+    }
+  }, [removedStones]);
+
+  // Use Mex values to analyze perfect play for the CPU.
+  useEffect(() => {
+    console.log('calculating...\n');
+    let allPossibleStates = getAllStates(size);
+    console.log('All Possible States Found.\n');
+    let objArr = getAdjacencyObjects(allPossibleStates);
+    console.log('Adjacency Objects Found.\n');
+    let objsWithMex = setMexValues(objArr, size);
+    console.log('Mex Values Found.\n');
+    setAdjacencyObjs(objsWithMex);
+    setIsLoading(false);
+  }, [isPreGame]);
+
+  // use perfectPlay, while losing choose the game state based on criteria when assigning next values.
+  function getPerfectPlayMove(objList, gameState) {
+    let index = searchGameObjects(objList, gameState);
+    if (index == -1) {
+      return null;
+    }
+    let adjacentLocation = objList[index].next;
+    return objList[index].adjacent[adjacentLocation];
+  }
+
+  function getRandomMove(objList, gameState) {
+    let index = searchGameObjects(objList, gameState);
+    if (index == -1) {
+      return null;
+    }
+    let numOptions = objList[index].adjacent.length;
+    let adjacentLocation = Math.floor(Math.random() * numOptions);
+    return objList[index].adjacent[adjacentLocation];
+  }
+
+  // Used to delay the cpu turns in certain game states
+  function timeout(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
 
   // This function takes in information about the game and changes the UI according to perfect play by the cpu.
   function makeCPUMove (desiredGameState, currentGameState, takenStoneArr) {
@@ -529,45 +485,6 @@ function App() {
         setRemovedStones([...takenStoneArr, startingStoneString]);
       }
   }
-  // After each move, check to see if the game is over.
-  useEffect(() => {
-    if (removedStones.length === size) {
-      setIsGameOver(true);
-    }
-  }, [removedStones]);
-
-  // Use Mex values to analyze perfect play for the CPU.
-  useEffect(() => {
-    console.log('calculating...\n');
-    let allPossibleStates = getAllStates(size);
-    console.log('All Possible States Found.\n');
-    let objArr = getAdjacencyObjects(allPossibleStates);
-    console.log('Adjacency Objects Found.\n');
-    let objsWithMex = setMexValues(objArr, size);
-    console.log('Mex Values Found.\n');
-    setAdjacencyObjs(objsWithMex);
-    setIsLoading(false);
-  }, [isPreGame]);
-
-  // use perfectPlay, while losing choose the game state based on criteria when assigning next values.
-  function getPerfectPlayMove(objList, gameState) {
-    let index = searchGameObjects(objList, gameState);
-    if (index == -1) {
-      return null;
-    }
-    let adjacentLocation = objList[index].next;
-    return objList[index].adjacent[adjacentLocation];
-  }
-
-  function getRandomMove(objList, gameState) {
-    let index = searchGameObjects(objList, gameState);
-    if (index == -1) {
-      return null;
-    }
-    let numOptions = objList[index].adjacent.length;
-    let adjacentLocation = Math.floor(Math.random() * numOptions);
-    return objList[index].adjacent[adjacentLocation];
-  }
 
   // Turn the UI into a game state that the cpu can understand.
   function getGameState(takenStoneArr) {
@@ -622,6 +539,88 @@ function App() {
     if (size > 9) {
       setSize(size - 1);
     }
+  }
+
+  const handleStoneClick = (stoneId) => {
+    console.log(stoneId);
+    const isSelected = selectedStones.includes(stoneId);
+    const isAvailable = !removedStones.includes(stoneId);
+
+    if (!isSelected && isAvailable && numStonesSelected < 2) {
+      // Okay if the stone selected is right next to the one being selected.
+      if (selectedStones.length === 0 || 
+        Math.abs(selectedStones[0] - stoneId) === 1 ||
+        // The following are two special cases to allow the ends of the circle to be taken at the same time. 
+        (selectedStones[0] == size && stoneId == 1) ||
+        (selectedStones[0] == 1 && stoneId == size)) {
+        setSelectedStones([...selectedStones, stoneId]);
+        setNumStonesSelected(numStonesSelected + 1);
+      } else {
+        //Illegal move, can add error message here if needed.
+      }
+    } else if (isSelected) {
+      const updatedSeats = selectedStones.filter((seat) => seat !== stoneId);
+      setSelectedStones(updatedSeats);
+      setNumStonesSelected(numStonesSelected - 1);
+    }
+  };
+
+  // This allows users to confirm their move within the game.
+  const handleSelectionConfirmation = async () => {
+    if (numStonesSelected > 0) {
+      setRemovedStones([...removedStones, ...selectedStones]);
+      setSelectedStones([]);
+      setNumStonesSelected(0);
+      if (!turnPrompt.includes('1')) {
+        setTurnPrompt("Player 1");
+        setIsPlayer1Turn(true);
+      } else {
+        if (isPlayer2Human) {
+          setTurnPrompt("Player 2");
+          setIsPlayer1Turn(false);
+        } else {
+          setTurnPrompt("CPU");
+          setIsPlayer1Turn(false);
+        }
+      }
+      if (!isPlayer2Human){
+        let removingArr = [...removedStones, ...selectedStones]
+        let gameState = getGameState(removingArr);
+        let newGameState = getPerfectPlayMove(adjacenyObjs, gameState);
+        setIsLoading(true);
+        await timeout(1000);
+        makeCPUMove(newGameState, gameState, removingArr);
+        if (removedStones.length + selectedStones.length !== size) {
+          setTurnPrompt("Player 1");
+          setIsPlayer1Turn(true);
+        }
+        setSelectedStones([]);
+        setNumStonesSelected(0);
+        setIsLoading(false);
+      }
+    }
+  }
+
+  // Allows the cpu to make a move in a cpu vs cpu game
+  const handleSimulationMove = async () => {
+    let removingArr = [...removedStones];
+    let gameState = getGameState(removingArr);
+    if (gameState[0] == size) {
+      gameState = [size+'c'];
+    }
+    let newGameState = getPerfectPlayMove(adjacenyObjs, gameState);
+    setIsLoading(true);
+    setSelectedStones([]);
+    setNumStonesSelected(0);
+    makeCPUMove(newGameState, gameState, removingArr);
+    if (turnPrompt.includes('1')) {
+      setTurnPrompt('CPU 2');
+      setIsPlayer1Turn(false);
+    } else {
+      setTurnPrompt('CPU 1');
+      setIsPlayer1Turn(true);
+    }
+    setIsLoading(false);
   }
 
   // This return statement places the HTML objects onto the web page.
