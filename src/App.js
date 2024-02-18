@@ -558,6 +558,17 @@ function App() {
     let adjacentLocation = objList[index].next;
     return objList[index].adjacent[adjacentLocation];
   }
+
+  function getRandomMove(objList, gameState) {
+    let index = searchGameObjects(objList, gameState);
+    if (index == -1) {
+      return null;
+    }
+    let numOptions = objList[index].adjacent.length;
+    let adjacentLocation = Math.floor(Math.random() * numOptions);
+    return objList[index].adjacent[adjacentLocation];
+  }
+
   // Turn the UI into a game state that the cpu can understand.
   function getGameState(takenStoneArr) {
     let sortedRemovedStones = arrSort(takenStoneArr);
