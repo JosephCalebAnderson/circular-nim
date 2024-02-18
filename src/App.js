@@ -17,8 +17,6 @@ function App() {
   const [size, setSize] = useState(15);
   const [computerLogic, setComputerLogic] = useState("Perfect");
   const stoneElements = [];
-  // Change this to change the size of the circle
-  //const size = 21;
 
   // This for loop initializes the stone objects 
   for (let stoneNum = 1; stoneNum <= size; stoneNum++) {
@@ -52,26 +50,20 @@ function App() {
     return partition;
 }
    
-  // Function to generate all unique 
-  // partitions of an integer
+  // Function to generate all unique partitions of an integer
   function getAllStates(n) {
         
       // An array to store a partition and all partitions
       let p = new Array(n); 
       var allStates = [];
         
-      // Index of last element in a 
-      // partition
+      // Index of last element in a partition
       let k = 0; 
         
-      // Initialize first partition as 
-      // number itself
+      // Initialize first partition as number itself
       p[k] = n; 
   
-      // This loop first prints current 
-      // partition, then generates next
-      // partition. The loop stops when 
-      // the current partition has all 1s
+      // This loop first prints current partition, then generates next partition. The loop stops when  the current partition has all 1s
       while (true) {
             
           // print current partition
@@ -531,18 +523,39 @@ function App() {
     setIsPreGame(false);
   }
 
-  function increaseSize () {
+  // function used in the pregame circle size selector.
+  function increaseSize1 () {
     if (size < 25) {
       setSize(size + 1);
     }
   }
 
-  function decreaseSize () {
+  // function used in the pregame circle size selector.
+  function increaseSize5 () {
+    if (size < 21) {
+      setSize(size + 5);
+    } else {
+      setSize(25);
+    }
+  }
+
+  // function used in the pregame circle size selector.
+  function decreaseSize1 () {
     if (size > 4) {
       setSize(size - 1);
     }
   }
 
+  // function used in the pregame circle size selector.
+  function decreaseSize5 () {
+    if (size > 8) {
+      setSize(size - 5);
+    } else {
+      setSize(4);
+    }
+  }
+
+  // Function that is called whenever a stone is clicked in the game.
   const handleStoneClick = (stoneId) => {
     console.log(stoneId);
     const isSelected = selectedStones.includes(stoneId);
@@ -585,6 +598,7 @@ function App() {
           setIsPlayer1Turn(false);
         }
       }
+      // If the 2nd player is not human, carry out this CPU move for this as well.
       if (!isPlayer2Human){
         let removingArr = [...removedStones, ...selectedStones]
         let gameState = getGameState(removingArr);
@@ -605,12 +619,14 @@ function App() {
 
   // Allows the cpu to make a move in a cpu vs cpu game
   const handleSimulationMove = async () => {
+    setIsLoading(true);
     let removingArr = [...removedStones];
     let gameState = getGameState(removingArr);
     if (gameState[0] == size) {
       gameState = [size+'c'];
     }
     let newGameState = null;
+    // different ways to get a move based on the CPU behavior selected.
     if (computerLogic === "Perfect") {
       newGameState = getPerfectPlayMove(adjacenyObjs, gameState);
     }
@@ -618,9 +634,9 @@ function App() {
       newGameState = getRandomMove(adjacenyObjs, gameState);
     }
     if (computerLogic === "Realistic") {
-      // Indicates an 85 percent chance of making the perfect move everytime.
+      // Indicates a 50 percent chance of making the perfect move everytime.
       // This will be changed later to better represent a human player.
-      let perfectProbability = 0.85;
+      let perfectProbability = 0.5;
       let diceRoll = Math.random();
       // Indicates the user should not play perfect.
       if (diceRoll > perfectProbability) {
@@ -630,7 +646,7 @@ function App() {
         newGameState = getPerfectPlayMove(adjacenyObjs, gameState);
       }
     }
-    setIsLoading(true);
+    // Clear any user selections, block them from making another move while this move is made.
     setSelectedStones([]);
     setNumStonesSelected(0);
     makeCPUMove(newGameState, gameState, removingArr);
@@ -648,9 +664,11 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        {isPreGame && <h3 className = "Size-change" onClick = {() => increaseSize()}>Increase</h3>}
+      {isPreGame && <h3 className = "Size-change" onClick = {() => increaseSize5()}>Increase +5</h3>}
+        {isPreGame && <h3 className = "Size-change" onClick = {() => increaseSize1()}>Increase +1</h3>}
         {isPreGame && <h3>Circle Size: {size}</h3>}
-        {isPreGame && <h3 className = "Size-change" onClick = {() => decreaseSize()}>Decrease</h3>}
+        {isPreGame && <h3 className = "Size-change" onClick = {() => decreaseSize1()}>Decrease -1</h3>}
+        {isPreGame && <h3 className = "Size-change" onClick = {() => decreaseSize5()}>Decrease -5</h3>}
         {isPreGame && <h5>Which type of game would you like to play?</h5>}
         {isPreGame && <btn className = "Game-option" onClick = {() => handleGame1Click()}>Player Vs Player</btn>}
         {isPreGame && <btn className = "Game-option" onClick = {() => handleGame2Click()}>Player Vs Computer</btn>}
