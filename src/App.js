@@ -602,7 +602,27 @@ function App() {
       if (!isPlayer2Human){
         let removingArr = [...removedStones, ...selectedStones]
         let gameState = getGameState(removingArr);
-        let newGameState = getPerfectPlayMove(adjacenyObjs, gameState);
+        let newGameState = null;
+    // different ways to get a move based on the CPU behavior selected.
+    if (computerLogic === "Perfect") {
+      newGameState = getPerfectPlayMove(adjacenyObjs, gameState);
+    }
+    if (computerLogic === "Random") {
+      newGameState = getRandomMove(adjacenyObjs, gameState);
+    }
+    if (computerLogic === "Realistic") {
+      // Indicates a 50 percent chance of making the perfect move everytime.
+      // This will be changed later to better represent a human player.
+      let perfectProbability = 0.5;
+      let diceRoll = Math.random();
+      // Indicates the user should not play perfect.
+      if (diceRoll > perfectProbability) {
+        newGameState = getRandomMove(adjacenyObjs, gameState);
+        // Indicates the user should play perfect.
+      } else {
+        newGameState = getPerfectPlayMove(adjacenyObjs, gameState);
+      }
+    }
         setIsLoading(true);
         await timeout(1000);
         makeCPUMove(newGameState, gameState, removingArr);
@@ -692,4 +712,3 @@ function App() {
 }
 
 export default App;
-
