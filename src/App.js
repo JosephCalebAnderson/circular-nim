@@ -752,11 +752,14 @@ function App() {
             <option value="10">10</option> 
             <option value="100">100</option> 
             <option value="1000">1000</option> 
+            <option value="10000">10000</option>
             </select>
-            <btn onClick = {() => runCPUSimulations()}>Run Simulation</btn>
+            </div>}
+            {isSimulation && <>
+            <btn className = "Game-option" onClick = {() => runCPUSimulations()}>Run Simulation</btn>
             <h2>Computer 1 Wins: {cpu1Wins}</h2>
             <h2>Computer 2 Wins: {cpu2Wins}</h2>
-          </div>}
+            </>}
       </header>
     </div>
   );
