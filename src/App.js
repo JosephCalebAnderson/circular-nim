@@ -15,7 +15,12 @@ function App() {
   const [isPlayer1Human, setIsPlayer1Human] = useState();
   const [isPlayer2Human, setIsPlayer2Human] = useState();
   const [size, setSize] = useState(15);
-  const [computerLogic, setComputerLogic] = useState("Perfect");
+  const [computer1Logic, setComputer1Logic] = useState("Perfect");
+  const [computer2Logic, setComputer2Logic] = useState("Perfect");
+  const [isSimulation, setisSimultation] = useState(false);
+  const [gameNum, setGameNum] = useState(10);
+  const [cpu1Wins, setCpu1Wins] = useState(0);
+  const [cpu2Wins, setCpu2Wins] = useState(0);
   const stoneElements = [];
 
   // This for loop initializes the stone objects 
@@ -381,7 +386,6 @@ function App() {
     let objsWithMex = setMexValues(objArr, size);
     console.log('Mex Values Found.\n');
     setAdjacencyObjs(objsWithMex);
-    console.log(computerLogic);
     setIsLoading(false);
   }, [isPreGame]);
 
@@ -523,6 +527,14 @@ function App() {
     setIsPreGame(false);
   }
 
+  // Game Options for running simulations
+  function handleGame4Click () {
+    setIsPlayer1Human(false);
+    setIsPlayer2Human(false);
+    setIsPreGame(false);
+    setisSimultation(true);
+  }
+
   // function used in the pregame circle size selector.
   function increaseSize1 () {
     if (size < 25) {
@@ -624,7 +636,7 @@ function App() {
       if (!isPlayer2Human){
         let removingArr = [...removedStones, ...selectedStones]
         let gameState = getGameState(removingArr);
-        let newGameState = getCPUMove(gameState, computerLogic);
+        let newGameState = getCPUMove(gameState, computer1Logic);
         setIsLoading(true);
         await timeout(1000);
         makeCPUMove(newGameState, gameState, removingArr);
@@ -647,7 +659,12 @@ function App() {
     if (gameState[0] == size) {
       gameState = [size+'c'];
     }
-    let newGameState = getCPUMove(gameState, computerLogic);
+    let newGameState = null;
+    if (turnPrompt.includes('1')) {
+      newGameState = getCPUMove(gameState, computer1Logic);
+    } else {
+      newGameState = getCPUMove(gameState, computer2Logic);
+    }
     // Clear any user selections, block them from making another move while this move is made.
     setSelectedStones([]);
     setNumStonesSelected(0);
@@ -662,6 +679,33 @@ function App() {
     setIsLoading(false);
   }
 
+  const runCPUSimulations = () => {
+    let comp1WinCount = 0;
+    let comp2WinCount = 0;
+    for (let i = 0; i < gameNum; i ++) {
+      let currentState = ['' + size + 'c'];
+      let gameEnded = false;
+      while (!gameEnded) {
+        // Make computer 1 move
+        currentState = getCPUMove(currentState, computer1Logic);
+        if (currentState.length == 1 && currentState[0] == 0) {
+          gameEnded = true;
+          comp2WinCount = comp2WinCount + 1;
+        }
+        // Make computer 2 move
+        if (!gameEnded) {
+          currentState = getCPUMove(currentState, computer2Logic);
+          if (currentState.length == 1 && currentState[0] == 0) {
+            gameEnded = true;
+            comp1WinCount = comp1WinCount + 1;
+          }
+        }
+      }
+    }
+    setCpu1Wins(comp1WinCount);
+    setCpu2Wins(comp2WinCount);
+  }
+
   // This return statement places the HTML objects onto the web page.
   return (
     <div className="App">
@@ -671,23 +715,48 @@ function App() {
         {isPreGame && <h3>Circle Size: {size}</h3>}
         {isPreGame && <h3 className = "Size-change" onClick = {() => decreaseSize1()}>Decrease -1</h3>}
         {isPreGame && <h3 className = "Size-change" onClick = {() => decreaseSize5()}>Decrease -5</h3>}
-        {isPreGame && <h5>Which type of game would you like to play?</h5>}
-        {isPreGame && <btn className = "Game-option" onClick = {() => handleGame1Click()}>Player Vs Player</btn>}
-        {isPreGame && <btn className = "Game-option" onClick = {() => handleGame2Click()}>Player Vs Computer</btn>}
-        {isPreGame && <btn className = "Game-option" onClick = {() => handleGame3Click()}>Computer Vs Computer</btn>}
-        {isPreGame && <h5>Select Computer Difficulty Below:</h5>}
-        {isPreGame && <select value={computerLogic} onChange={(event) => setComputerLogic(event.target.value)}>
-        <option value="Perfect">Perfect</option> 
-        <option value="Random">Random</option> 
-        <option value="Realistic">Realistic</option> 
-        </select>}
-        <div className="stones">
-        {isGameOver && <h2 className={`prompt ${isPlayer1Turn ?  'p1' : 'p2'}`}>{turnPrompt} Wins!</h2>}
-          {!isGameOver && !isPreGame && <h3 className={`prompt ${isPlayer1Turn ?  'p1' : 'p2'}`}>{turnPrompt}'s Turn</h3>}
-          {!isGameOver && !isPreGame && !isLoading && isPlayer1Human && <btn className="selection" onClick = {() => handleSelectionConfirmation()}>Confirm Move</btn>}
-          {!isGameOver && !isPreGame && !isLoading && !isPlayer1Human && <btn className="selection" onClick = {() => handleSimulationMove()}>Make CPU Move</btn>}
-          {!isPreGame && stoneElements}
+        {isPreGame && <h3>Which type of game would you like to play?</h3>}
+        <div>
+          {isPreGame && <btn className = "Game-option" onClick = {() => handleGame1Click()}>Player Vs Player</btn>}
+          {isPreGame && <btn className = "Game-option" onClick = {() => handleGame2Click()}>Player Vs Computer</btn>}
+          {isPreGame && <btn className = "Game-option" onClick = {() => handleGame3Click()}>Computer Vs Computer</btn>}
+          {isPreGame && <btn className = "Game-option" onClick = {() => handleGame4Click()}>Run Simulations</btn>}
         </div>
+        {isPreGame && <h3>Select Computer Difficulty Below:</h3>}
+        {isPreGame && <div>
+          <h5>Computer 1:</h5>
+          <select value={computer1Logic} onChange={(event) => setComputer1Logic(event.target.value)}>
+          <option value="Perfect">Perfect</option> 
+          <option value="Random">Random</option> 
+          <option value="Realistic">Realistic</option> 
+          </select>
+        </div>}
+        {isPreGame && <div>
+          <h5>Computer 2:</h5>
+          <select value={computer2Logic} onChange={(event) => setComputer2Logic(event.target.value)}>
+          <option value="Perfect">Perfect</option> 
+          <option value="Random">Random</option> 
+          <option value="Realistic">Realistic</option> 
+          </select>
+        </div>}
+        <div className="stones">
+        {!isSimulation && isGameOver && <h2 className={`prompt ${isPlayer1Turn ?  'p1' : 'p2'}`}>{turnPrompt} Wins!</h2>}
+          {!isSimulation && !isGameOver && !isPreGame && <h3 className={`prompt ${isPlayer1Turn ?  'p1' : 'p2'}`}>{turnPrompt}'s Turn</h3>}
+          {!isSimulation && !isGameOver && !isPreGame && !isLoading && isPlayer1Human && <btn className="selection" onClick = {() => handleSelectionConfirmation()}>Confirm Move</btn>}
+          {!isSimulation && !isGameOver && !isPreGame && !isLoading && !isPlayer1Human && <btn className="selection" onClick = {() => handleSimulationMove()}>Make CPU Move</btn>}
+          {!isSimulation && !isPreGame && stoneElements}
+        </div>
+          {isSimulation && <div className="simulation">
+            <h3>Number of Games:</h3>
+            <select value={gameNum} onChange={(event) => setGameNum(event.target.value)}>
+            <option value="10">10</option> 
+            <option value="100">100</option> 
+            <option value="1000">1000</option> 
+            </select>
+            <btn onClick = {() => runCPUSimulations()}>Run Simulation</btn>
+            <h2>Computer 1 Wins: {cpu1Wins}</h2>
+            <h2>Computer 2 Wins: {cpu2Wins}</h2>
+          </div>}
       </header>
     </div>
   );
