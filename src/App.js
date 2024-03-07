@@ -612,6 +612,20 @@ function App() {
         return getPerfectPlayMove(adjacenyObjs, currentGameState);
       }
     }
+    // cpu performs worse when there are more strings involved.
+    if (computerType === "testing1") {
+      let numStrings = currentGameState.length;
+      let perfectProbability = 1/numStrings;
+      let diceRoll = Math.random();
+      // Indicates the user should not play perfect.
+      if (diceRoll > perfectProbability) {
+        return getRandomMove(adjacenyObjs, currentGameState);
+        // Indicates the user should play perfect.
+      } else {
+        return getPerfectPlayMove(adjacenyObjs, currentGameState);
+      }
+      // sum is now the number of remaining stones.
+    }
   }
 
   // This allows users to confirm their move within the game.
