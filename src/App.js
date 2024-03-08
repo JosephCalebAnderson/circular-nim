@@ -781,7 +781,7 @@ function App() {
           {!isSimulation && !isPreGame && stoneElements}
         </div>
         {!isSimulation && !isPreGame && !isLoading && <btn className="selection" onClick = {() => handleResetGame()}>Reset Game</btn>}
-          {isSimulation && <div>
+          {isSimulation && !isPreGame && <div>
             <h3>Number of Games:</h3>
             <select className = "dropdown" value={gameNum} onChange={(event) => setGameNum(event.target.value)}>
             <option value="10">10</option> 
@@ -790,7 +790,7 @@ function App() {
             <option value="10000">10000</option>
             </select>
             </div>}
-            {isSimulation && <>
+            {isSimulation && !isPreGame && <>
             <btn className = "Game-option" onClick = {() => runCPUSimulations()}>Run Simulation</btn>
             <h2>Computer 1 Wins: {cpu1Wins}</h2>
             <h2>Computer 2 Wins: {cpu2Wins}</h2>
