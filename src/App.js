@@ -720,6 +720,25 @@ function App() {
     setCpu2Wins(comp2WinCount);
   }
 
+  const handleResetGame = () => {
+    if (isPlayer1Human) {
+      setTurnPrompt("Player 1");
+    } else {
+      setTurnPrompt("CPU 1");
+    }
+    setIsPlayer1Turn(true);
+    setIsGameOver(false);
+    setRemovedStones([]);
+    setSelectedStones([]);
+    setNumStonesSelected(0);
+  }
+
+  const handleNewGameSelection = () => {
+    handleResetGame();
+    setTurnPrompt("Player 1");
+    setIsPreGame(true);
+  }
+
   // This return statement places the HTML objects onto the web page.
   return (
     <div className="App">
@@ -739,7 +758,7 @@ function App() {
         {isPreGame && <h3>Select Computer Difficulty Below:</h3>}
         {isPreGame && <div>
           <h5>Computer 1:</h5>
-          <select value={computer1Logic} onChange={(event) => setComputer1Logic(event.target.value)}>
+          <select className = "dropdown" value={computer1Logic} onChange={(event) => setComputer1Logic(event.target.value)}>
           <option value="Perfect">Perfect</option> 
           <option value="Random">Random</option> 
           <option value="Realistic">Realistic</option> 
@@ -747,7 +766,7 @@ function App() {
         </div>}
         {isPreGame && <div>
           <h5>Computer 2:</h5>
-          <select value={computer2Logic} onChange={(event) => setComputer2Logic(event.target.value)}>
+          <select className = "dropdown" value={computer2Logic} onChange={(event) => setComputer2Logic(event.target.value)}>
           <option value="Perfect">Perfect</option> 
           <option value="Random">Random</option> 
           <option value="Realistic">Realistic</option> 
@@ -760,9 +779,10 @@ function App() {
           {!isSimulation && !isGameOver && !isPreGame && !isLoading && !isPlayer1Human && <btn className="selection" onClick = {() => handleSimulationMove()}>Make CPU Move</btn>}
           {!isSimulation && !isPreGame && stoneElements}
         </div>
-          {isSimulation && <div className="simulation">
+        {!isSimulation && !isPreGame && !isLoading && <btn className="selection" onClick = {() => handleResetGame()}>Reset Game</btn>}
+          {isSimulation && <div>
             <h3>Number of Games:</h3>
-            <select value={gameNum} onChange={(event) => setGameNum(event.target.value)}>
+            <select className = "dropdown" value={gameNum} onChange={(event) => setGameNum(event.target.value)}>
             <option value="10">10</option> 
             <option value="100">100</option> 
             <option value="1000">1000</option> 
@@ -774,6 +794,7 @@ function App() {
             <h2>Computer 1 Wins: {cpu1Wins}</h2>
             <h2>Computer 2 Wins: {cpu2Wins}</h2>
             </>}
+            {!isPreGame && !isLoading && <btn className="selection" onClick = {() => handleNewGameSelection()}>Start New Game</btn>}
       </header>
     </div>
   );
