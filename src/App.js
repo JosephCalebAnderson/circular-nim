@@ -567,6 +567,28 @@ function App() {
     }
   }
 
+  // Reset the current game with the same initial conditions
+  const handleResetGame = () => {
+    if (isPlayer1Human) {
+      setTurnPrompt("Player 1");
+    } else {
+      setTurnPrompt("CPU 1");
+    }
+    setIsPlayer1Turn(true);
+    setIsGameOver(false);
+    setRemovedStones([]);
+    setSelectedStones([]);
+    setNumStonesSelected(0);
+  }
+
+  // Go back to the previous screen to make new selections
+  const handleNewGameSelection = () => {
+    handleResetGame();
+    setSize(15);
+    setTurnPrompt("Player 1");
+    setIsPreGame(true);
+  }
+
   // Function that is called whenever a stone is clicked in the game.
   const handleStoneClick = (stoneId) => {
     console.log(stoneId);
@@ -718,26 +740,6 @@ function App() {
     }
     setCpu1Wins(comp1WinCount);
     setCpu2Wins(comp2WinCount);
-  }
-
-  const handleResetGame = () => {
-    if (isPlayer1Human) {
-      setTurnPrompt("Player 1");
-    } else {
-      setTurnPrompt("CPU 1");
-    }
-    setIsPlayer1Turn(true);
-    setIsGameOver(false);
-    setRemovedStones([]);
-    setSelectedStones([]);
-    setNumStonesSelected(0);
-  }
-
-  const handleNewGameSelection = () => {
-    handleResetGame();
-    setSize(15);
-    setTurnPrompt("Player 1");
-    setIsPreGame(true);
   }
 
   // This return statement places the HTML objects onto the web page.
