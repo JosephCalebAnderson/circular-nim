@@ -735,6 +735,7 @@ function App() {
 
   const handleNewGameSelection = () => {
     handleResetGame();
+    setSize(15);
     setTurnPrompt("Player 1");
     setIsPreGame(true);
   }
