@@ -615,38 +615,45 @@ function App() {
   };
 
   const getCPUMove = (currentGameState, computerType) => {
+    let perfectProbability = null;
     if (computerType === "Perfect") {
       return getPerfectPlayMove(adjacenyObjs, currentGameState);
     }
     if (computerType === "Random") {
       return getRandomMove(adjacenyObjs, currentGameState);
     }
-    if (computerType === "Realistic") {
+    if (computerType === "coinflip") {
       // Indicates a 50 percent chance of making the perfect move everytime.
       // This will be changed later to better represent a human player.
-      let perfectProbability = 0.5;
-      let diceRoll = Math.random();
-      // Indicates the user should not play perfect.
-      if (diceRoll > perfectProbability) {
-        return getRandomMove(adjacenyObjs, currentGameState);
-        // Indicates the user should play perfect.
-      } else {
-        return getPerfectPlayMove(adjacenyObjs, currentGameState);
-      }
+      perfectProbability = 0.5;
     }
     // cpu performs worse when there are more strings involved.
     if (computerType === "testing1") {
       let numStrings = currentGameState.length;
-      let perfectProbability = 1/numStrings;
-      let diceRoll = Math.random();
-      // Indicates the user should not play perfect.
-      if (diceRoll > perfectProbability) {
-        return getRandomMove(adjacenyObjs, currentGameState);
-        // Indicates the user should play perfect.
+      perfectProbability = 1/numStrings;
+      console.log(perfectProbability);
+    }
+    // cpu perfroms worse when there are more stones remaining
+    if (computerType === "testing2") {
+      let startingString = '' + size + 'c';
+      let numRemainingStones = 0;
+      if (currentGameState.length == 1 && currentGameState[0] === startingString) {
+        numRemainingStones = size;
       } else {
-        return getPerfectPlayMove(adjacenyObjs, currentGameState);
+        for (let i = 0; i < currentGameState.length; i ++) {
+          numRemainingStones = numRemainingStones + currentGameState[i];
+        }
       }
-      // sum is now the number of remaining stones.
+      perfectProbability = 1 - (numRemainingStones/size);
+      console.log(perfectProbability);
+    }
+    let diceRoll = Math.random();
+    // Indicates the user should not play perfect.
+    if (diceRoll > perfectProbability) {
+      return getRandomMove(adjacenyObjs, currentGameState);
+      // Indicates the user should play perfect.
+    } else {
+      return getPerfectPlayMove(adjacenyObjs, currentGameState);
     }
   }
 
@@ -764,7 +771,9 @@ function App() {
           <select className = "dropdown" value={computer1Logic} onChange={(event) => setComputer1Logic(event.target.value)}>
           <option value="Perfect">Perfect</option> 
           <option value="Random">Random</option> 
-          <option value="Realistic">Realistic</option> 
+          <option value="coinflip">Coin Flip</option>
+          <option value="testing1">testing1</option> 
+          <option value="testing2">testing2</option> 
           </select>
         </div>}
         {isPreGame && <div>
@@ -772,7 +781,9 @@ function App() {
           <select className = "dropdown" value={computer2Logic} onChange={(event) => setComputer2Logic(event.target.value)}>
           <option value="Perfect">Perfect</option> 
           <option value="Random">Random</option> 
-          <option value="Realistic">Realistic</option> 
+          <option value="coinflip">Coin Flip</option>
+          <option value="testing1">testing1</option> 
+          <option value="testing2">testing2</option> 
           </select>
         </div>}
         <div className="stones">
