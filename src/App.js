@@ -629,23 +629,32 @@ function App() {
     }
     // cpu performs worse when there are more strings involved.
     if (computerType === "testing1") {
-      let numStrings = currentGameState.length;
-      perfectProbability = 1/numStrings;
+      let numStrings = getNumStrings(currentGameState);
+      // Possibly change the numerator to give some more advantage
+      //perfectProbability = 1/numStrings;
+      perfectProbability = 1 - 1/numStrings;
       console.log(perfectProbability);
     }
     // cpu perfroms worse when there are more stones remaining
     if (computerType === "testing2") {
-      let startingString = '' + size + 'c';
-      let numRemainingStones = 0;
-      if (currentGameState.length == 1 && currentGameState[0] === startingString) {
-        numRemainingStones = size;
-      } else {
-        for (let i = 0; i < currentGameState.length; i ++) {
-          numRemainingStones = numRemainingStones + currentGameState[i];
-        }
-      }
+      let numRemainingStones = getNumRemainingStones(currentGameState);
+      // Possibly change the denomenator to give some more advantage
       perfectProbability = 1 - (numRemainingStones/size);
-      console.log(perfectProbability);
+    }
+    // cpu performs based on the number of stones and strings
+    if (computerType === "testing3") {
+      let numStrings = getNumStrings(currentGameState);
+      let numRemainingStones = getNumRemainingStones(currentGameState);
+      // Possibly change the numerator to give some more advantage
+      //perfectProbability = 1/(numStrings+numRemainingStones);
+      perfectProbability = 1 - 1/(numStrings+numRemainingStones);
+    }
+    // cpu performs based on the number of stones and strings
+    if (computerType === "testing4") {
+      let numStrings = getNumStrings(currentGameState);
+      let numRemainingStones = getNumRemainingStones(currentGameState);
+      // Possibly change the denomenator to give some more advantage
+      perfectProbability = 1 - (numStrings+numRemainingStones)/size;
     }
     let diceRoll = Math.random();
     // Indicates the user should not play perfect.
@@ -655,6 +664,23 @@ function App() {
     } else {
       return getPerfectPlayMove(adjacenyObjs, currentGameState);
     }
+  }
+
+  const getNumStrings = (state) => {
+    return state.length;
+  }
+
+  const getNumRemainingStones = (state) => {
+    let startingString = '' + size + 'c';
+    let numRemainingStones = 0;
+    if (state.length == 1 && state[0] === startingString) {
+      return size;
+    } else {
+      for (let i = 0; i < state.length; i ++) {
+        numRemainingStones = numRemainingStones + state[i];
+      }
+    }
+    return numRemainingStones;
   }
 
   // This allows users to confirm their move within the game.
@@ -773,7 +799,9 @@ function App() {
           <option value="Random">Random</option> 
           <option value="coinflip">Coin Flip</option>
           <option value="testing1">testing1</option> 
-          <option value="testing2">testing2</option> 
+          <option value="testing2">testing2</option>
+          <option value="testing3">testing3</option>
+          <option value="testing4">testing4</option> 
           </select>
         </div>}
         {isPreGame && <div>
@@ -783,7 +811,9 @@ function App() {
           <option value="Random">Random</option> 
           <option value="coinflip">Coin Flip</option>
           <option value="testing1">testing1</option> 
-          <option value="testing2">testing2</option> 
+          <option value="testing2">testing2</option>
+          <option value="testing3">testing3</option>
+          <option value="testing4">testing4</option>  
           </select>
         </div>}
         <div className="stones">
