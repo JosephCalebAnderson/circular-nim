@@ -632,8 +632,8 @@ function App() {
     if (computerType === "testing1") {
       let numStrings = getNumStrings(currentGameState);
       // Possibly change the numerator to give some more advantage
-      //perfectProbability = 1/numStrings;
-      perfectProbability = 1 - 1/numStrings;
+      perfectProbability = 1/numStrings;
+      //perfectProbability = 1 - 1/numStrings;
       console.log(perfectProbability);
     }
     // cpu perfroms worse when there are more stones remaining
@@ -647,8 +647,8 @@ function App() {
       let numStrings = getNumStrings(currentGameState);
       let numRemainingStones = getNumRemainingStones(currentGameState);
       // Possibly change the numerator to give some more advantage
-      //perfectProbability = 1/(numStrings+numRemainingStones);
-      perfectProbability = 1 - 1/(numStrings+numRemainingStones);
+      perfectProbability = 1/(numStrings+numRemainingStones);
+      //perfectProbability = 1 - 1/(numStrings+numRemainingStones);
     }
     // cpu performs based on the number of stones and strings
     if (computerType === "testing4") {
