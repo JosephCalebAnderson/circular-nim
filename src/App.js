@@ -587,6 +587,7 @@ function App() {
     setSize(15);
     setTurnPrompt("Player 1");
     setIsPreGame(true);
+    setisSimultation(false);
   }
 
   // Function that is called whenever a stone is clicked in the game.
