@@ -628,26 +628,24 @@ function App() {
       // This will be changed later to better represent a human player.
       perfectProbability = 0.5;
     }
-    // cpu performs worse when there are more strings involved.
-    if (computerType === "testing1") {
+    // cpu performs better when there are more strings involved.
+    if (computerType === "stringsOnly") {
       let numStrings = getNumStrings(currentGameState);
       // Possibly change the numerator to give some more advantage
-      perfectProbability = 1/numStrings;
-      //perfectProbability = 1 - 1/numStrings;
-      console.log(perfectProbability);
+      perfectProbability = 2-(2 ** (1-(numStrings/5)));
     }
     // cpu perfroms worse when there are more stones remaining
-    if (computerType === "testing2") {
+    if (computerType === "stonesOnly") {
       let numRemainingStones = getNumRemainingStones(currentGameState);
       // Possibly change the denomenator to give some more advantage
-      perfectProbability = 1 - (numRemainingStones/size);
+      perfectProbability = 3* 2 ** (-3*numRemainingStones/20) - 0.5;
     }
     // cpu performs based on the number of stones and strings
-    if (computerType === "testing3") {
+    if (computerType === "bothMedium") {
       let numStrings = getNumStrings(currentGameState);
       let numRemainingStones = getNumRemainingStones(currentGameState);
       // Possibly change the numerator to give some more advantage
-      perfectProbability = 1/(numStrings+numRemainingStones);
+      perfectProbability = 2 ** (2-(3*numRemainingStones/20)) - 2 ** (1-(numStrings/5))  + 0.75;
       //perfectProbability = 1 - 1/(numStrings+numRemainingStones);
     }
     // cpu performs based on the number of stones and strings
@@ -799,10 +797,10 @@ function App() {
           <option value="Perfect">Perfect</option> 
           <option value="Random">Random</option> 
           <option value="coinflip">Coin Flip</option>
-          <option value="testing1">testing1</option> 
-          <option value="testing2">testing2</option>
-          <option value="testing3">testing3</option>
-          <option value="testing4">testing4</option> 
+          <option value="stingsOnly">Strings Only</option> 
+          <option value="stonesOnly">Stones Only</option>
+          <option value="bothMedium">Medium</option>
+          <option value="testing">testing</option>  
           </select>
         </div>}
         {isPreGame && <div>
@@ -811,10 +809,10 @@ function App() {
           <option value="Perfect">Perfect</option> 
           <option value="Random">Random</option> 
           <option value="coinflip">Coin Flip</option>
-          <option value="testing1">testing1</option> 
-          <option value="testing2">testing2</option>
-          <option value="testing3">testing3</option>
-          <option value="testing4">testing4</option>  
+          <option value="stingsOnly">Strings Only</option> 
+          <option value="stonesOnly">Stones Only</option>
+          <option value="bothMedium">Medium</option>
+          <option value="testing">testing</option>  
           </select>
         </div>}
         <div className="stones">
