@@ -649,7 +649,7 @@ function App() {
       //perfectProbability = 1 - 1/(numStrings+numRemainingStones);
     }
     // cpu performs based on the number of stones and strings
-    if (computerType === "testing4") {
+    if (computerType === "testing") {
       let numStrings = getNumStrings(currentGameState);
       let numRemainingStones = getNumRemainingStones(currentGameState);
       // Possibly change the denomenator to give some more advantage
