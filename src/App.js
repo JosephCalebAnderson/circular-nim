@@ -409,6 +409,10 @@ function App() {
     return objList[index].adjacent[adjacentLocation];
   }
 
+  const getComputerWinProbability = () => {
+    return 1;
+  }
+
   // Used to delay the cpu turns in certain game states
   function timeout(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -533,6 +537,9 @@ function App() {
     setIsPlayer2Human(false);
     setIsPreGame(false);
     setisSimultation(true);
+    // Add calculation for number of expected games won.
+    let cpu1WinPercent = getComputerWinProbability();
+    let cpu2WinPercent = 1 - cpu1WinPercent;
   }
 
   // function used in the pregame circle size selector.
