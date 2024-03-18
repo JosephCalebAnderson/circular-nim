@@ -791,13 +791,6 @@ function App() {
         {isPreGame && <h3>Circle Size: {size}</h3>}
         {isPreGame && <h3 className = "Size-change" onClick = {() => decreaseSize1()}>Decrease -1</h3>}
         {isPreGame && <h3 className = "Size-change" onClick = {() => decreaseSize5()}>Decrease -5</h3>}
-        {isPreGame && <h3>Which type of game would you like to play?</h3>}
-        <div>
-          {isPreGame && <btn className = "Game-option" onClick = {() => handleGame1Click()}>Player Vs Player</btn>}
-          {isPreGame && <btn className = "Game-option" onClick = {() => handleGame2Click()}>Player Vs Computer</btn>}
-          {isPreGame && <btn className = "Game-option" onClick = {() => handleGame3Click()}>Computer Vs Computer</btn>}
-          {isPreGame && <btn className = "Game-option" onClick = {() => handleGame4Click()}>Run Simulations</btn>}
-        </div>
         {isPreGame && <h3>Select Computer Difficulty Below:</h3>}
         {isPreGame && <div>
           <h5>Computer 1:</h5>
@@ -827,6 +820,13 @@ function App() {
           <option value="testing">testing</option>  
           </select>
         </div>}
+        <div>
+          {isPreGame && <h3>Which type of game would you like to play?</h3>}
+          {isPreGame && <btn className = "Game-option" onClick = {() => handleGame1Click()}>Player Vs Player</btn>}
+          {isPreGame && <btn className = "Game-option" onClick = {() => handleGame2Click()}>Player Vs Computer</btn>}
+          {isPreGame && <btn className = "Game-option" onClick = {() => handleGame3Click()}>Computer Vs Computer</btn>}
+          {isPreGame && <btn className = "Game-option" onClick = {() => handleGame4Click()}>Run Simulations</btn>}
+        </div>
         <div className="stones">
         {!isSimulation && isGameOver && <h2 className={`prompt ${isPlayer1Turn ?  'p1' : 'p2'}`}>{turnPrompt} Wins!</h2>}
           {!isSimulation && !isGameOver && !isPreGame && <h3 className={`prompt ${isPlayer1Turn ?  'p1' : 'p2'}`}>{turnPrompt}'s Turn</h3>}
@@ -850,6 +850,7 @@ function App() {
             <h2>Computer 2 Wins: {cpu2Wins}</h2>
             </>}
             {!isPreGame && !isLoading && <btn className="selection" onClick = {() => handleNewGameSelection()}>Start New Game</btn>}
+            <p>Created by Caleb Anderson, University of Georgia Student</p>
       </header>
     </div>
   );
