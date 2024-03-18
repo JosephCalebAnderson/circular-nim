@@ -21,6 +21,8 @@ function App() {
   const [gameNum, setGameNum] = useState(10);
   const [cpu1Wins, setCpu1Wins] = useState(0);
   const [cpu2Wins, setCpu2Wins] = useState(0);
+  const [cpu1Winning, setCPU1Winning] = useState(0);
+  const [cpu2Winning, setCPU2Winning] = useState(0);
   const stoneElements = [];
 
   // This for loop initializes the stone objects 
@@ -409,6 +411,11 @@ function App() {
     return objList[index].adjacent[adjacentLocation];
   }
 
+  function getMex(objList, gameState) {
+    let index = searchGameObjects(objList, gameState);
+    return objList[index].mex;
+  }
+
   const getComputerWinProbability = () => {
     return 1;
   }
@@ -765,28 +772,40 @@ function App() {
   const runCPUSimulations = () => {
     let comp1WinCount = 0;
     let comp2WinCount = 0;
+    let comp1WinningMoves = 0;
+    let comp2WinningMoves = 0;
     for (let i = 0; i < gameNum; i ++) {
       let currentState = ['' + size + 'c'];
       let gameEnded = false;
       while (!gameEnded) {
         // Make computer 1 move
         currentState = getCPUMove(currentState, computer1Logic);
+        let mexValue = getMex(adjacenyObjs, currentState);
+        if (mexValue == 0) {
+          comp1WinningMoves = comp1WinningMoves + 1;
+        }
         if (currentState.length == 1 && currentState[0] == 0) {
-          gameEnded = true;
           comp2WinCount = comp2WinCount + 1;
+          gameEnded = true;
         }
         // Make computer 2 move
         if (!gameEnded) {
           currentState = getCPUMove(currentState, computer2Logic);
+          let mexValue = getMex(adjacenyObjs, currentState);
+        if (mexValue == 0) {
+          comp2WinningMoves = comp2WinningMoves + 1;
+        }
           if (currentState.length == 1 && currentState[0] == 0) {
-            gameEnded = true;
             comp1WinCount = comp1WinCount + 1;
+            gameEnded = true;
           }
         }
       }
     }
     setCpu1Wins(comp1WinCount);
     setCpu2Wins(comp2WinCount);
+    setCPU1Winning(comp1WinningMoves);
+    setCPU2Winning(comp2WinningMoves);
   }
 
   // This return statement places the HTML objects onto the web page.
@@ -854,7 +873,9 @@ function App() {
             {isSimulation && !isPreGame && <>
             <btn className = "Game-option" onClick = {() => runCPUSimulations()}>Run Simulation</btn>
             <h2>Computer 1 Wins: {cpu1Wins}</h2>
+            <h2>Computer 1 Winning State Moves: {cpu1Winning}</h2>
             <h2>Computer 2 Wins: {cpu2Wins}</h2>
+            <h2>Computer 2 Winning State Moves: {cpu2Winning}</h2>
             </>}
             {!isPreGame && !isLoading && <btn className="selection" onClick = {() => handleNewGameSelection()}>Start New Game</btn>}
             <p>Created by Caleb Anderson, University of Georgia Student</p>
