@@ -641,12 +641,20 @@ function App() {
       perfectProbability = 3* 2 ** (-3*numRemainingStones/20) - 0.5;
     }
     // cpu performs based on the number of stones and strings
+    if (computerType == "bothEasy") {
+      let numStrings = getNumStrings(currentGameState);
+      let numRemainingStones = getNumRemainingStones(currentGameState);
+      perfectProbability = 2 ** (2-(3*numRemainingStones/20)) - 2 ** (1-(numStrings/5))  + 0.5;
+    }
     if (computerType === "bothMedium") {
       let numStrings = getNumStrings(currentGameState);
       let numRemainingStones = getNumRemainingStones(currentGameState);
-      // Possibly change the numerator to give some more advantage
       perfectProbability = 2 ** (2-(3*numRemainingStones/20)) - 2 ** (1-(numStrings/5))  + 0.75;
-      //perfectProbability = 1 - 1/(numStrings+numRemainingStones);
+    }
+    if (computerType === "bothHard") {
+      let numStrings = getNumStrings(currentGameState);
+      let numRemainingStones = getNumRemainingStones(currentGameState);
+      perfectProbability = 2 ** (2-(3*numRemainingStones/20)) - 2 ** (1-(numStrings/5))  + 1;
     }
     // cpu performs based on the number of stones and strings
     if (computerType === "testing") {
@@ -799,7 +807,9 @@ function App() {
           <option value="coinflip">Coin Flip</option>
           <option value="stingsOnly">Strings Only</option> 
           <option value="stonesOnly">Stones Only</option>
+          <option value="bothEasy">Easy</option>
           <option value="bothMedium">Medium</option>
+          <option value="bothHard">Hard</option>
           <option value="testing">testing</option>  
           </select>
         </div>}
@@ -811,7 +821,9 @@ function App() {
           <option value="coinflip">Coin Flip</option>
           <option value="stingsOnly">Strings Only</option> 
           <option value="stonesOnly">Stones Only</option>
+          <option value="bothEasy">Easy</option>
           <option value="bothMedium">Medium</option>
+          <option value="bothHard">Hard</option>
           <option value="testing">testing</option>  
           </select>
         </div>}
