@@ -504,7 +504,7 @@ function App() {
     let randomProbability = 1 - perfectProbability;
     let possibleStateNum = gameObject.adjacent.length;
     let winningProbability = 0;
-    if (perfectProbability == 1) {
+    if (perfectProbability >= 1) {
       let newState = gameObject.adjacent[gameObject.next];
       winningProbability = getComputerWinProbability(gameObjs, newState, !computer1Turn);
     } else {
@@ -514,7 +514,7 @@ function App() {
           percentageReached = percentageReached + perfectProbability 
         }
         let newState = gameObject.adjacent[i];
-        winningProbability = percentageReached * getComputerWinProbability(gameObjs, newState, !computer1Turn);
+        winningProbability = winningProbability + percentageReached * getComputerWinProbability(gameObjs, newState, !computer1Turn);
       }
     }
     return winningProbability;
