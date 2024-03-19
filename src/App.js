@@ -392,7 +392,6 @@ function App() {
     setAdjacencyObjs(objsWithMex);
     setIsLoading(false);
     if (isSimulation) {
-      //Fortnite
     let startingState = ['' + size + 'c'];
     let cpu1WinPercent = getComputerWinProbability(objsWithMex, startingState, true);
     let cpu2WinPercent = 1 - cpu1WinPercent;
@@ -468,23 +467,23 @@ function App() {
     if (computerType === "stonesOnly") {
       let numRemainingStones = getNumRemainingStones(thisGameState);
       // Possibly change the denomenator to give some more advantage
-      perfectProbability = 3* 2 ** (-3*numRemainingStones/20) - 0.5;
+      perfectProbability = (3* (2 ** (-3*numRemainingStones/20))) - 0.5;
     }
     // cpu performs based on the number of stones and strings
     if (computerType == "bothEasy") {
       let numStrings = getNumStrings(thisGameState);
       let numRemainingStones = getNumRemainingStones(thisGameState);
-      perfectProbability = 2 ** (2-(3*numRemainingStones/20)) - 2 ** (1-(numStrings/5))  + 0.5;
+      perfectProbability = (2 ** (2-(3*numRemainingStones/20))) - (2 ** (1-(numStrings/5)))  + 0.5;
     }
     if (computerType === "bothMedium") {
       let numStrings = getNumStrings(thisGameState);
       let numRemainingStones = getNumRemainingStones(thisGameState);
-      perfectProbability = 2 ** (2-(3*numRemainingStones/20)) - 2 ** (1-(numStrings/5))  + 0.75;
+      perfectProbability = (2 ** (2-(3*numRemainingStones/20))) - (2 ** (1-(numStrings/5)))  + 0.75
     }
     if (computerType === "bothHard") {
       let numStrings = getNumStrings(thisGameState);
       let numRemainingStones = getNumRemainingStones(thisGameState);
-      perfectProbability = 2 ** (2-(3*numRemainingStones/20)) - 2 ** (1-(numStrings/5))  + 1;
+      perfectProbability = (2 ** (2-(3*numRemainingStones/20))) - (2 ** (1-(numStrings/5)))  + 1;
     }
     // cpu performs based on the number of stones and strings
     if (computerType === "testing") {
@@ -506,11 +505,11 @@ function App() {
     let winningProbability = 0;
     if (perfectProbability >= 1) {
       let newState = gameObject.adjacent[gameObject.next];
-      winningProbability = getComputerWinProbability(gameObjs, newState, !computer1Turn);
+      winningProbability = winningProbability + getComputerWinProbability(gameObjs, newState, !computer1Turn);
     } else {
       for (let i = 0; i < possibleStateNum; i ++) {
         let percentageReached = randomProbability / possibleStateNum;
-        if (i == gameObject.next) {
+        if (i == gameObject.next && perfectProbability > 0) {
           percentageReached = percentageReached + perfectProbability 
         }
         let newState = gameObject.adjacent[i];
@@ -755,23 +754,23 @@ function App() {
     if (computerType === "stonesOnly") {
       let numRemainingStones = getNumRemainingStones(currentGameState);
       // Possibly change the denomenator to give some more advantage
-      perfectProbability = 3* 2 ** (-3*numRemainingStones/20) - 0.5;
+      perfectProbability = (3 * (2 ** (-3*numRemainingStones/20))) - 0.5;
     }
     // cpu performs based on the number of stones and strings
     if (computerType == "bothEasy") {
       let numStrings = getNumStrings(currentGameState);
       let numRemainingStones = getNumRemainingStones(currentGameState);
-      perfectProbability = 2 ** (2-(3*numRemainingStones/20)) - 2 ** (1-(numStrings/5))  + 0.5;
+      perfectProbability = (2 ** (2-(3*numRemainingStones/20))) - (2 ** (1-(numStrings/5)))  + 0.5;
     }
     if (computerType === "bothMedium") {
       let numStrings = getNumStrings(currentGameState);
       let numRemainingStones = getNumRemainingStones(currentGameState);
-      perfectProbability = 2 ** (2-(3*numRemainingStones/20)) - 2 ** (1-(numStrings/5))  + 0.75;
+      perfectProbability = (2 ** (2-(3*numRemainingStones/20))) - (2 ** (1-(numStrings/5)))  + 0.75;
     }
     if (computerType === "bothHard") {
       let numStrings = getNumStrings(currentGameState);
       let numRemainingStones = getNumRemainingStones(currentGameState);
-      perfectProbability = 2 ** (2-(3*numRemainingStones/20)) - 2 ** (1-(numStrings/5))  + 1;
+      perfectProbability = (2 ** (2-(3*numRemainingStones/20))) - (2 ** (1-(numStrings/5)))  + 1;
     }
     // cpu performs based on the number of stones and strings
     if (computerType === "testing") {
