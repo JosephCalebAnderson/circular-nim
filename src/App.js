@@ -509,11 +509,11 @@ function App() {
     } else {
       for (let i = 0; i < possibleStateNum; i ++) {
         let percentageReached = randomProbability / possibleStateNum;
-        if (i == gameObject.next && perfectProbability > 0) {
+        if (i == gameObject.next && perfectProbability >= 0) {
           percentageReached = percentageReached + perfectProbability 
         }
         let newState = gameObject.adjacent[i];
-        winningProbability = winningProbability + percentageReached * getComputerWinProbability(gameObjs, newState, !computer1Turn);
+        winningProbability = winningProbability + (percentageReached * getComputerWinProbability(gameObjs, newState, !computer1Turn));
       }
     }
     return winningProbability;
