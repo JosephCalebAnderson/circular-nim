@@ -10,7 +10,7 @@ function App() {
   const [isPlayer1Turn, setIsPlayer1Turn] = useState(true);
   const [isGameOver, setIsGameOver] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [adjacenyObjs, setAdjacencyObjs] = useState([]);
+  const [adjacencyObjs, setAdjacencyObjs] = useState([]);
   const [isPreGame, setIsPreGame] = useState(true);
   const [isPlayer1Human, setIsPlayer1Human] = useState();
   const [isPlayer2Human, setIsPlayer2Human] = useState();
@@ -19,6 +19,8 @@ function App() {
   const [computer2Logic, setComputer2Logic] = useState("Perfect");
   const [isSimulation, setisSimultation] = useState(false);
   const [gameNum, setGameNum] = useState(10);
+  const [cpu1WinPercentage, setCpu1WinPercentage] = useState(0);
+  const [cpu2WinPercentage, setCpu2WinPercentage] = useState(0);
   const [cpu1Wins, setCpu1Wins] = useState(0);
   const [cpu2Wins, setCpu2Wins] = useState(0);
   const [cpu1Winning, setCPU1Winning] = useState(0);
@@ -389,6 +391,14 @@ function App() {
     console.log('Mex Values Found.\n');
     setAdjacencyObjs(objsWithMex);
     setIsLoading(false);
+    if (isSimulation) {
+      //Fortnite
+    let startingState = ['' + size + 'c'];
+    let cpu1WinPercent = getComputerWinProbability(objsWithMex, startingState, true);
+    let cpu2WinPercent = 1 - cpu1WinPercent;
+    setCpu1WinPercentage(cpu1WinPercent);
+    setCpu2WinPercentage(cpu2WinPercent);
+    }
   }, [isPreGame]);
 
   // use perfectPlay, while losing choose the game state based on criteria when assigning next values.
@@ -416,8 +426,98 @@ function App() {
     return objList[index].mex;
   }
 
-  const getComputerWinProbability = () => {
-    return 1;
+  const getComputerWinProbability = (gameObjs, thisGameState, computer1Turn) => {
+    // if the game state is now 0 then this CPU has won
+    if (thisGameState.length == 1 && thisGameState[0] == 0) {
+      if (computer1Turn) {
+        return 1;
+      } else {
+        return 0;
+      }
+    }
+    if (thisGameState.length == 1 && thisGameState[0] == 1) {
+      if (computer1Turn) {
+        return 0;
+      } else {
+        return 1;
+      }
+    }
+    let computerType = computer1Logic;
+    if (!computer1Turn) {
+      computerType = computer2Logic;
+    }
+    let perfectProbability = 0;
+    if (computerType === "Perfect") {
+      perfectProbability = 1;
+    }
+    if (computerType === "Random") {
+      perfectProbability = 0;
+    }
+    if (computerType === "coinflip") {
+      // Indicates a 50 percent chance of making the perfect move everytime.
+      // This will be changed later to better represent a human player.
+      perfectProbability = 0.5;
+    }
+    // cpu performs better when there are more strings involved.
+    if (computerType === "stringsOnly") {
+      let numStrings = getNumStrings(thisGameState);
+      // Possibly change the numerator to give some more advantage
+      perfectProbability = 2-(2 ** (1-(numStrings/5)));
+    }
+    // cpu perfroms worse when there are more stones remaining
+    if (computerType === "stonesOnly") {
+      let numRemainingStones = getNumRemainingStones(thisGameState);
+      // Possibly change the denomenator to give some more advantage
+      perfectProbability = 3* 2 ** (-3*numRemainingStones/20) - 0.5;
+    }
+    // cpu performs based on the number of stones and strings
+    if (computerType == "bothEasy") {
+      let numStrings = getNumStrings(thisGameState);
+      let numRemainingStones = getNumRemainingStones(thisGameState);
+      perfectProbability = 2 ** (2-(3*numRemainingStones/20)) - 2 ** (1-(numStrings/5))  + 0.5;
+    }
+    if (computerType === "bothMedium") {
+      let numStrings = getNumStrings(thisGameState);
+      let numRemainingStones = getNumRemainingStones(thisGameState);
+      perfectProbability = 2 ** (2-(3*numRemainingStones/20)) - 2 ** (1-(numStrings/5))  + 0.75;
+    }
+    if (computerType === "bothHard") {
+      let numStrings = getNumStrings(thisGameState);
+      let numRemainingStones = getNumRemainingStones(thisGameState);
+      perfectProbability = 2 ** (2-(3*numRemainingStones/20)) - 2 ** (1-(numStrings/5))  + 1;
+    }
+    // cpu performs based on the number of stones and strings
+    if (computerType === "testing") {
+      let numStrings = getNumStrings(thisGameState);
+      let numRemainingStones = getNumRemainingStones(thisGameState);
+      // Possibly change the denomenator to give some more advantage
+      perfectProbability = 1 - (numStrings+numRemainingStones)/size;
+    }
+    console.log(thisGameState);
+    let index = searchGameObjects(gameObjs, thisGameState);
+    let gameObject = gameObjs[index];
+    console.log(gameObject);
+    // current is the current game state
+    // adjacent is the adjacenct states
+    // mex is the mex value
+    // next is the perfect play index
+    let randomProbability = 1 - perfectProbability;
+    let possibleStateNum = gameObject.adjacent.length;
+    let winningProbability = 0;
+    if (perfectProbability == 1) {
+      let newState = gameObject.adjacent[gameObject.next];
+      winningProbability = getComputerWinProbability(gameObjs, newState, !computer1Turn);
+    } else {
+      for (let i = 0; i < possibleStateNum; i ++) {
+        let percentageReached = randomProbability / possibleStateNum;
+        if (i == gameObject.next) {
+          percentageReached = percentageReached + perfectProbability 
+        }
+        let newState = gameObject.adjacent[i];
+        winningProbability = percentageReached * getComputerWinProbability(gameObjs, newState, !computer1Turn);
+      }
+    }
+    return winningProbability;
   }
 
   // Used to delay the cpu turns in certain game states
@@ -545,8 +645,11 @@ function App() {
     setIsPreGame(false);
     setisSimultation(true);
     // Add calculation for number of expected games won.
-    let cpu1WinPercent = getComputerWinProbability();
+    /*let startingState = ['' + size + 'c'];
+    let cpu1WinPercent = getComputerWinProbability(adjacencyObjs, startingState, computer1Logic);
     let cpu2WinPercent = 1 - cpu1WinPercent;
+    setCpu1WinPercentage(cpu1WinPercent);
+    setCpu2WinPercentage(cpu2WinPercent);*/
   }
 
   // function used in the pregame circle size selector.
@@ -632,10 +735,10 @@ function App() {
   const getCPUMove = (currentGameState, computerType) => {
     let perfectProbability = null;
     if (computerType === "Perfect") {
-      return getPerfectPlayMove(adjacenyObjs, currentGameState);
+      return getPerfectPlayMove(adjacencyObjs, currentGameState);
     }
     if (computerType === "Random") {
-      return getRandomMove(adjacenyObjs, currentGameState);
+      return getRandomMove(adjacencyObjs, currentGameState);
     }
     if (computerType === "coinflip") {
       // Indicates a 50 percent chance of making the perfect move everytime.
@@ -680,10 +783,10 @@ function App() {
     let diceRoll = Math.random();
     // Indicates the user should not play perfect.
     if (diceRoll > perfectProbability) {
-      return getRandomMove(adjacenyObjs, currentGameState);
+      return getRandomMove(adjacencyObjs, currentGameState);
       // Indicates the user should play perfect.
     } else {
-      return getPerfectPlayMove(adjacenyObjs, currentGameState);
+      return getPerfectPlayMove(adjacencyObjs, currentGameState);
     }
   }
 
@@ -780,7 +883,7 @@ function App() {
       while (!gameEnded) {
         // Make computer 1 move
         currentState = getCPUMove(currentState, computer1Logic);
-        let mexValue = getMex(adjacenyObjs, currentState);
+        let mexValue = getMex(adjacencyObjs, currentState);
         if (mexValue == 0) {
           comp1WinningMoves = comp1WinningMoves + 1;
         }
@@ -791,7 +894,7 @@ function App() {
         // Make computer 2 move
         if (!gameEnded) {
           currentState = getCPUMove(currentState, computer2Logic);
-          let mexValue = getMex(adjacenyObjs, currentState);
+          let mexValue = getMex(adjacencyObjs, currentState);
         if (mexValue == 0) {
           comp2WinningMoves = comp2WinningMoves + 1;
         }
@@ -872,8 +975,10 @@ function App() {
             </div>}
             {isSimulation && !isPreGame && <>
             <btn className = "Game-option" onClick = {() => runCPUSimulations()}>Run Simulation</btn>
+            <h2>Computer 1 Expected Win Percentage: {cpu1WinPercentage}</h2>
             <h2>Computer 1 Wins: {cpu1Wins}</h2>
             <h2>Computer 1 Winning State Moves: {cpu1Winning}</h2>
+            <h2>Computer 2 Expected Win Percentage: {cpu2WinPercentage}</h2>
             <h2>Computer 2 Wins: {cpu2Wins}</h2>
             <h2>Computer 2 Winning State Moves: {cpu2Winning}</h2>
             </>}
