@@ -390,7 +390,6 @@ function App() {
     let objsWithMex = setMexValues(objArr, size);
     console.log('Mex Values Found.\n');
     setAdjacencyObjs(objsWithMex);
-    setIsLoading(false);
     if (isSimulation) {
     let startingState = ['' + size + 'c'];
     let cpu1WinPercent = getComputerWinProbability(objsWithMex, startingState, true);
@@ -398,6 +397,7 @@ function App() {
     setCpu1WinPercentage(cpu1WinPercent);
     setCpu2WinPercentage(cpu2WinPercent);
     }
+    setIsLoading(false);
   }, [isPreGame]);
 
   // use perfectPlay, while losing choose the game state based on criteria when assigning next values.
@@ -425,98 +425,8 @@ function App() {
     return objList[index].mex;
   }
 
-  const getComputerWinProbability = (gameObjs, thisGameState, computer1Turn) => {
-    // if the game state is now 0 then this CPU has won
-    if (thisGameState.length == 1 && thisGameState[0] == 0) {
-      if (computer1Turn) {
-        return 1;
-      } else {
-        return 0;
-      }
-    }
-    if (thisGameState.length == 1 && thisGameState[0] == 1) {
-      if (computer1Turn) {
-        return 0;
-      } else {
-        return 1;
-      }
-    }
-    let computerType = computer1Logic;
-    if (!computer1Turn) {
-      computerType = computer2Logic;
-    }
-    let perfectProbability = 0;
-    if (computerType === "Perfect") {
-      perfectProbability = 1;
-    }
-    if (computerType === "Random") {
-      perfectProbability = 0;
-    }
-    if (computerType === "coinflip") {
-      // Indicates a 50 percent chance of making the perfect move everytime.
-      // This will be changed later to better represent a human player.
-      perfectProbability = 0.5;
-    }
-    // cpu performs better when there are more strings involved.
-    if (computerType === "stringsOnly") {
-      let numStrings = getNumStrings(thisGameState);
-      // Possibly change the numerator to give some more advantage
-      perfectProbability = 2-(2 ** (1-(numStrings/5)));
-    }
-    // cpu perfroms worse when there are more stones remaining
-    if (computerType === "stonesOnly") {
-      let numRemainingStones = getNumRemainingStones(thisGameState);
-      // Possibly change the denomenator to give some more advantage
-      perfectProbability = (3* (2 ** (-3*numRemainingStones/20))) - 0.5;
-    }
-    // cpu performs based on the number of stones and strings
-    if (computerType == "bothEasy") {
-      let numStrings = getNumStrings(thisGameState);
-      let numRemainingStones = getNumRemainingStones(thisGameState);
-      perfectProbability = (2 ** (2-(3*numRemainingStones/20))) - (2 ** (1-(numStrings/5)))  + 0.5;
-    }
-    if (computerType === "bothMedium") {
-      let numStrings = getNumStrings(thisGameState);
-      let numRemainingStones = getNumRemainingStones(thisGameState);
-      perfectProbability = (2 ** (2-(3*numRemainingStones/20))) - (2 ** (1-(numStrings/5)))  + 0.75
-    }
-    if (computerType === "bothHard") {
-      let numStrings = getNumStrings(thisGameState);
-      let numRemainingStones = getNumRemainingStones(thisGameState);
-      perfectProbability = (2 ** (2-(3*numRemainingStones/20))) - (2 ** (1-(numStrings/5)))  + 1;
-    }
-    // cpu performs based on the number of stones and strings
-    if (computerType === "testing") {
-      let numStrings = getNumStrings(thisGameState);
-      let numRemainingStones = getNumRemainingStones(thisGameState);
-      // Possibly change the denomenator to give some more advantage
-      perfectProbability = 1 - (numStrings+numRemainingStones)/size;
-    }
-    console.log(thisGameState);
-    let index = searchGameObjects(gameObjs, thisGameState);
-    let gameObject = gameObjs[index];
-    console.log(gameObject);
-    // current is the current game state
-    // adjacent is the adjacenct states
-    // mex is the mex value
-    // next is the perfect play index
-    let randomProbability = 1 - perfectProbability;
-    let possibleStateNum = gameObject.adjacent.length;
-    let winningProbability = 0;
-    if (perfectProbability >= 1) {
-      let newState = gameObject.adjacent[gameObject.next];
-      winningProbability = winningProbability + getComputerWinProbability(gameObjs, newState, !computer1Turn);
-    } else {
-      for (let i = 0; i < possibleStateNum; i ++) {
-        let percentageReached = randomProbability / possibleStateNum;
-        if (i == gameObject.next && perfectProbability >= 0) {
-          percentageReached = percentageReached + perfectProbability 
-        }
-        let newState = gameObject.adjacent[i];
-        winningProbability = winningProbability + (percentageReached * getComputerWinProbability(gameObjs, newState, !computer1Turn));
-      }
-    }
-    return winningProbability;
+  const setComputerWinProbability = (gameObjs, thisGameState, computer1Turn) => {
+    return 1;
   }
 
   // Used to delay the cpu turns in certain game states
