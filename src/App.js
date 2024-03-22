@@ -346,12 +346,9 @@ function App() {
       } else {
           value = 0;
       }
-      let adjacentArray = [];
-      adjacentArray.push([circleSize-1]);
-      adjacentArray.push([circleSize-2]);
       let obj = {
           current: ['' + circleSize + 'c'],
-          adjacent: adjacentArray,
+          adjacent: [[circleSize-1], [circleSize-2]],
           mex: value,
           next: 0
       }
@@ -376,35 +373,28 @@ function App() {
     return -1;
   }
 
-  function getAdjacencyMatrix (stateArray) {
+  function getAdjacencyMatrix (adjObjs) {
     // Get all possible states
-    let count = stateArray.length
+    let count = adjObjs.length
     // Form the adjacency matrix identifiers
-    var adjMatrix = Array(count).fill(0).map(()=>Array(count).fill(0));
+    let adjMatrix = Array(count).fill(0).map(()=>Array(count).fill(0));
     // the rows will identify the state we are starting from
     for (let row = 0; row < count; row ++) {
-        // current testing state and the states it can reach in one move
-        let currentGameState = stateArray[row];
-        let adjacentStates = getAdjGameStates(currentGameState);
-        // get the possible reachable state and test if it can be reached by the current state.
-        for (let column = 0 + row; column < count; column ++) {
-            let possibleState = stateArray[column];
-            // stringify to compare arrays
-            var tester1 = JSON.stringify(adjacentStates);
-            var tester2 = JSON.stringify(possibleState);
-            var tester3 = tester1.indexOf(tester2);
-            // if possible state is in the adjacent states we do the following
-            if(tester3 != -1){
-                // set the index to 1 and remove that state from the adjacencyStates list
-                adjMatrix[row][column] = 1;
-                tester1 = tester1.replace(tester2+',', '');
-                tester1 = tester1.replace(','+tester2, '');
-                adjacentStates = JSON.parse(tester1);
-            }
-            
+      // current testing state and the states it can reach in one move
+      let adjacentStates = adjObjs[row].adjacent;
+      // get the possible reachable state and test if it can be reached by the current state.
+      for (let column = row + 1; column < count; column ++) {
+        let possibleState = adjObjs[column].current;
+        let index = searchForArray(adjacentStates, possibleState);
+        // if possible state is in the adjacent states we do the following
+        if(index > -1){
+          // set the index to 1 and remove that state from the adjacencyStates list
+          adjMatrix[row][column] = 1;
+        } else {
+          adjMatrix[row][column] = 0;
         }
+      }
     }
-    //console.log(adjMatrix);
     return adjMatrix;
 }
 
@@ -416,6 +406,7 @@ function App() {
   }, [removedStones]);
 
   // Use Mex values to analyze perfect play for the CPU.
+  /*
   useEffect(() => {
     console.log('calculating...\n');
     let allPossibleStates = getAllStates(size);
@@ -426,7 +417,7 @@ function App() {
     console.log('Mex Values Found.\n');
     setAdjacencyObjs(objsWithMex);
     if (isSimulation) {
-      let adjMatrix = getAdjacencyMatrix(allPossibleStates);
+      let adjMatrix = getAdjacencyMatrix(objsWithMex);
       console.log(adjMatrix);
       console.log('Adjacency Matrix Found');
       let cpu1ProbMatrix = getProbabilityMatrix(objsWithMex, computer1Logic, adjMatrix);
@@ -440,6 +431,36 @@ function App() {
     }
     setIsLoading(false);
   }, [isPreGame]);
+  */
+
+  useEffect(() => {
+    console.log('calculating...\n');
+    let allPossibleStates = getAllStates(size);
+    console.log('All Possible States Found.\n');
+    let objArr = getAdjacencyObjects(allPossibleStates);
+    console.log('Adjacency Objects Found.\n');
+    let objsWithMex = setMexValues(objArr, size);
+    console.log('Mex Values Found.\n');
+    setAdjacencyObjs(objsWithMex);
+    setIsLoading(false);
+  }, [size]);
+
+  useEffect(() => {
+    if (isSimulation) {
+      let adjacentMatrix = getAdjacencyMatrix(adjacencyObjs);
+      console.log(adjacentMatrix);
+      console.log('Adjacency Matrix Found');
+      let cpu1ProbMatrix = getProbabilityMatrix(adjacencyObjs, computer1Logic, adjacentMatrix);
+      console.log(cpu1ProbMatrix);
+      let cpu2ProbMatrix = getProbabilityMatrix(adjacencyObjs, computer2Logic, adjacentMatrix);
+      let cpu1WinPercent = setComputerWinProbability(cpu1ProbMatrix, cpu2ProbMatrix);
+      console.log(cpu1WinPercent);
+      let cpu2WinPercent = 1 - cpu1WinPercent;
+      setCpu1WinPercentage(cpu1WinPercent);
+      setCpu2WinPercentage(cpu2WinPercent);
+    }
+    setIsLoading(false);
+  }, [isSimulation]);
 
   // use perfectPlay, while losing choose the game state based on criteria when assigning next values.
   function getPerfectPlayMove(objList, gameState) {
@@ -531,7 +552,9 @@ function App() {
         if (j == index) {
           reachableChance = reachableChance + perfectProbability;
         }
-        matrix[i][j] = reachableChance;
+        if (matrix[i][j] == 1) {
+          matrix[i][j] = reachableChance;
+        }
       }
     }
     return matrix;
@@ -543,9 +566,11 @@ function App() {
     let newMatrix = Array(length).fill(0).map(()=>Array(length).fill(0));
     for (let i = 0; i < length; i ++) {
       for (let j = 0; j < length; j ++) {
+        let total = 0;
         for (let k = 0; k < length; k ++) {
-          newMatrix[i][j] = newMatrix[i][j] + (mat1[i][k] * mat2[k][j]);
+          total = total + (mat1[i][k] * mat2[k][j]);
         }
+        newMatrix[i][j] = total;
       }
     }
     return newMatrix;
