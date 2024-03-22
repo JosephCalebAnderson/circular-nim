@@ -346,9 +346,12 @@ function App() {
       } else {
           value = 0;
       }
+      let adjacentArray = [];
+      adjacentArray.push([circleSize-1]);
+      adjacentArray.push([circleSize-2]);
       let obj = {
           current: ['' + circleSize + 'c'],
-          adjacent: [[circleSize-1],[circleSize-2]],
+          adjacent: adjacentArray,
           mex: value,
           next: 0
       }
@@ -373,6 +376,38 @@ function App() {
     return -1;
   }
 
+  function getAdjacencyMatrix (stateArray) {
+    // Get all possible states
+    let count = stateArray.length
+    // Form the adjacency matrix identifiers
+    var adjMatrix = Array(count).fill(0).map(()=>Array(count).fill(0));
+    // the rows will identify the state we are starting from
+    for (let row = 0; row < count; row ++) {
+        // current testing state and the states it can reach in one move
+        let currentGameState = stateArray[row];
+        let adjacentStates = getAdjGameStates(currentGameState);
+        // get the possible reachable state and test if it can be reached by the current state.
+        for (let column = 0 + row; column < count; column ++) {
+            let possibleState = stateArray[column];
+            // stringify to compare arrays
+            var tester1 = JSON.stringify(adjacentStates);
+            var tester2 = JSON.stringify(possibleState);
+            var tester3 = tester1.indexOf(tester2);
+            // if possible state is in the adjacent states we do the following
+            if(tester3 != -1){
+                // set the index to 1 and remove that state from the adjacencyStates list
+                adjMatrix[row][column] = 1;
+                tester1 = tester1.replace(tester2+',', '');
+                tester1 = tester1.replace(','+tester2, '');
+                adjacentStates = JSON.parse(tester1);
+            }
+            
+        }
+    }
+    //console.log(adjMatrix);
+    return adjMatrix;
+}
+
   // After each move, check to see if the game is over.
   useEffect(() => {
     if (removedStones.length === size) {
@@ -391,11 +426,17 @@ function App() {
     console.log('Mex Values Found.\n');
     setAdjacencyObjs(objsWithMex);
     if (isSimulation) {
-    let startingState = ['' + size + 'c'];
-    let cpu1WinPercent = getComputerWinProbability(objsWithMex, startingState, true);
-    let cpu2WinPercent = 1 - cpu1WinPercent;
-    setCpu1WinPercentage(cpu1WinPercent);
-    setCpu2WinPercentage(cpu2WinPercent);
+      let adjMatrix = getAdjacencyMatrix(allPossibleStates);
+      console.log(adjMatrix);
+      console.log('Adjacency Matrix Found');
+      let cpu1ProbMatrix = getProbabilityMatrix(objsWithMex, computer1Logic, adjMatrix);
+      console.log(cpu1ProbMatrix);
+      let cpu2ProbMatrix = getProbabilityMatrix(objsWithMex, computer2Logic, adjMatrix);
+      let cpu1WinPercent = setComputerWinProbability(cpu1ProbMatrix, cpu2ProbMatrix);
+      console.log(cpu1WinPercent);
+      let cpu2WinPercent = 1 - cpu1WinPercent;
+      setCpu1WinPercentage(cpu1WinPercent);
+      setCpu2WinPercentage(cpu2WinPercent);
     }
     setIsLoading(false);
   }, [isPreGame]);
@@ -425,8 +466,103 @@ function App() {
     return objList[index].mex;
   }
 
-  const setComputerWinProbability = (gameObjs, thisGameState, computer1Turn) => {
-    return 1;
+  const getProbabilityMatrix = (adjObjs, computerType, adjMat) => {
+    let matrix = adjMat;
+    let count = adjObjs.length;
+    for (let i = 0; i < count - 1; i ++) {
+      let perfectProbability = null;
+      let currentGameState = adjObjs[i].current;
+      if (computerType === "Perfect") {
+        perfectProbability = 1;
+      }
+      if (computerType === "Random") {
+        perfectProbability = 0;
+      }
+      if (computerType === "coinflip") {
+        // Indicates a 50 percent chance of making the perfect move everytime.
+        // This will be changed later to better represent a human player.
+        perfectProbability = 0.5;
+      }
+      // cpu performs better when there are more strings involved.
+      if (computerType === "stringsOnly") {
+        let numStrings = getNumStrings(currentGameState);
+        // Possibly change the numerator to give some more advantage
+        perfectProbability = 2-(2 ** (1-(numStrings/5)));
+      }
+      // cpu perfroms worse when there are more stones remaining
+      if (computerType === "stonesOnly") {
+        let numRemainingStones = getNumRemainingStones(currentGameState);
+        // Possibly change the denomenator to give some more advantage
+        perfectProbability = (3 * (2 ** (-3*numRemainingStones/20))) - 0.5;
+      }
+      // cpu performs based on the number of stones and strings
+      if (computerType == "bothEasy") {
+        let numStrings = getNumStrings(currentGameState);
+        let numRemainingStones = getNumRemainingStones(currentGameState);
+        perfectProbability = (2 ** (2-(3*numRemainingStones/20))) - (2 ** (1-(numStrings/5)))  + 0.5;
+      }
+      if (computerType === "bothMedium") {
+        let numStrings = getNumStrings(currentGameState);
+        let numRemainingStones = getNumRemainingStones(currentGameState);
+        perfectProbability = (2 ** (2-(3*numRemainingStones/20))) - (2 ** (1-(numStrings/5)))  + 0.75;
+      }
+      if (computerType === "bothHard") {
+        let numStrings = getNumStrings(currentGameState);
+        let numRemainingStones = getNumRemainingStones(currentGameState);
+        perfectProbability = (2 ** (2-(3*numRemainingStones/20))) - (2 ** (1-(numStrings/5)))  + 1;
+      }
+      // cpu performs based on the number of stones and strings
+      if (computerType === "testing") {
+        let numStrings = getNumStrings(currentGameState);
+        let numRemainingStones = getNumRemainingStones(currentGameState);
+        perfectProbability = 1 - (numStrings+numRemainingStones)/size;
+      }
+      if (perfectProbability > 1) {
+        perfectProbability = 1;
+      }
+      if (perfectProbability < 0) {
+        perfectProbability = 0;
+      }
+      let randomProbability = (1 - perfectProbability)/adjObjs[i].adjacent.length;
+      let perfectMoveState = adjObjs[i].adjacent[adjObjs[i].next];
+      let index = searchGameObjects(adjObjs, perfectMoveState);
+      for (let j = i; j < count; j ++) {
+        let reachableChance = randomProbability;
+        if (j == index) {
+          reachableChance = reachableChance + perfectProbability;
+        }
+        matrix[i][j] = reachableChance;
+      }
+    }
+    return matrix;
+  }
+
+  // multiply two matricies of the same size
+  const multiplyMatricies = (mat1, mat2) => {
+    let length  = mat1.length;
+    let newMatrix = Array(length).fill(0).map(()=>Array(length).fill(0));
+    for (let i = 0; i < length; i ++) {
+      for (let j = 0; j < length; j ++) {
+        for (let k = 0; k < length; k ++) {
+          newMatrix[i][j] = newMatrix[i][j] + (mat1[i][k] * mat2[k][j]);
+        }
+      }
+    }
+    return newMatrix;
+  }
+
+  const setComputerWinProbability = (cpu1Prob, cpu2Prob) => {
+    let winPercent = 0;
+    let numMoves = (size - 2)/2;
+    let newMatrix = multiplyMatricies(cpu1Prob,cpu2Prob);
+    let checkableIndex = newMatrix.length - 1;
+    winPercent = winPercent + newMatrix[0][checkableIndex];
+    for (let i = 0; i < numMoves; i ++) {
+      newMatrix = multiplyMatricies(newMatrix,cpu1Prob);
+      newMatrix = multiplyMatricies(newMatrix,cpu2Prob);
+      winPercent = winPercent + newMatrix[0][checkableIndex];
+    }
+    return winPercent;
   }
 
   // Used to delay the cpu turns in certain game states
@@ -553,12 +689,6 @@ function App() {
     setIsPlayer2Human(false);
     setIsPreGame(false);
     setisSimultation(true);
-    // Add calculation for number of expected games won.
-    /*let startingState = ['' + size + 'c'];
-    let cpu1WinPercent = getComputerWinProbability(adjacencyObjs, startingState, computer1Logic);
-    let cpu2WinPercent = 1 - cpu1WinPercent;
-    setCpu1WinPercentage(cpu1WinPercent);
-    setCpu2WinPercentage(cpu2WinPercent);*/
   }
 
   // function used in the pregame circle size selector.
