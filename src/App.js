@@ -580,13 +580,21 @@ function App() {
   const setComputerWinProbability = (cpu1Prob, cpu2Prob) => {
     let winPercent = 0;
     let numMoves = (size - 2)/2;
+    console.log(computer1Logic);
+    console.log(computer2Logic);
+    console.log(adjacencyObjs);
+    console.log(cpu1Prob);
+    console.log(cpu2Prob);
     let newMatrix = multiplyMatricies(cpu1Prob,cpu2Prob);
     let checkableIndex = newMatrix.length - 1;
     winPercent = winPercent + newMatrix[0][checkableIndex];
+    console.log(newMatrix);
     for (let i = 0; i < numMoves; i ++) {
       newMatrix = multiplyMatricies(newMatrix,cpu1Prob);
+      console.log(newMatrix);
       newMatrix = multiplyMatricies(newMatrix,cpu2Prob);
       winPercent = winPercent + newMatrix[0][checkableIndex];
+      console.log(newMatrix);
     }
     return winPercent;
   }
