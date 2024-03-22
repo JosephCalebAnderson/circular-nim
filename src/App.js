@@ -565,7 +565,8 @@ function App() {
     let length  = mat1.length;
     let newMatrix = Array(length).fill(0).map(()=>Array(length).fill(0));
     for (let i = 0; i < length; i ++) {
-      for (let j = 0; j < length; j ++) {
+      // j = i + 1 because if j < i + 2 it will result in a 0
+      for (let j = i + 1; j < length; j ++) {
         let total = 0;
         for (let k = 0; k < length; k ++) {
           total = total + (mat1[i][k] * mat2[k][j]);
