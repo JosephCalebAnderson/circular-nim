@@ -448,13 +448,11 @@ function App() {
   useEffect(() => {
     if (isSimulation) {
       let adjacentMatrix = getAdjacencyMatrix(adjacencyObjs);
-      console.log(adjacentMatrix);
-      console.log('Adjacency Matrix Found');
+      console.log('Adjacency Matrix Found\n');
       let cpu1ProbMatrix = getProbabilityMatrix(adjacencyObjs, computer1Logic, adjacentMatrix);
-      console.log(cpu1ProbMatrix);
       let cpu2ProbMatrix = getProbabilityMatrix(adjacencyObjs, computer2Logic, adjacentMatrix);
+      console.log('Probability Matricies Found!\n');
       let cpu1WinPercent = setComputerWinProbability(cpu1ProbMatrix, cpu2ProbMatrix);
-      console.log(cpu1WinPercent);
       let cpu2WinPercent = 1 - cpu1WinPercent;
       setCpu1WinPercentage(cpu1WinPercent);
       setCpu2WinPercentage(cpu2WinPercent);
@@ -488,8 +486,8 @@ function App() {
   }
 
   const getProbabilityMatrix = (adjObjs, computerType, adjMat) => {
-    let matrix = adjMat;
     let count = adjObjs.length;
+    let matrix = Array(count).fill(0).map(()=>Array(count).fill(0));
     for (let i = 0; i < count - 1; i ++) {
       let perfectProbability = null;
       let currentGameState = adjObjs[i].current;
@@ -552,7 +550,7 @@ function App() {
         if (j == index) {
           reachableChance = reachableChance + perfectProbability;
         }
-        if (matrix[i][j] == 1) {
+        if (adjMat[i][j] == 1) {
           matrix[i][j] = reachableChance;
         }
       }
@@ -580,21 +578,13 @@ function App() {
   const setComputerWinProbability = (cpu1Prob, cpu2Prob) => {
     let winPercent = 0;
     let numMoves = (size - 2)/2;
-    console.log(computer1Logic);
-    console.log(computer2Logic);
-    console.log(adjacencyObjs);
-    console.log(cpu1Prob);
-    console.log(cpu2Prob);
     let newMatrix = multiplyMatricies(cpu1Prob,cpu2Prob);
     let checkableIndex = newMatrix.length - 1;
     winPercent = winPercent + newMatrix[0][checkableIndex];
-    console.log(newMatrix);
     for (let i = 0; i < numMoves; i ++) {
       newMatrix = multiplyMatricies(newMatrix,cpu1Prob);
-      console.log(newMatrix);
       newMatrix = multiplyMatricies(newMatrix,cpu2Prob);
       winPercent = winPercent + newMatrix[0][checkableIndex];
-      console.log(newMatrix);
     }
     return winPercent;
   }
