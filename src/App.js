@@ -566,7 +566,8 @@ function App() {
       // j = i + 1 because if j < i + 2 it will result in a 0
       for (let j = i + 1; j < length; j ++) {
         let total = 0;
-        for (let k = 0; k < length; k ++) {
+        // Will k > i and k < j help reduce the complexity???
+        for (let k = i + 1; k < j; k ++) {
           total = total + (mat1[i][k] * mat2[k][j]);
         }
         newMatrix[i][j] = total;
