@@ -5,6 +5,8 @@ function App() {
   // Needed values for implementation
   const [selectedStones, setSelectedStones] = useState([]);
   const [removedStones, setRemovedStones] = useState([]);
+  const [winningStones, setWinningStones] = useState([]);
+  const [winningStonesVisible, setWinningStonesVisible] = useState(false);
   const [numStonesSelected, setNumStonesSelected] = useState(0);
   const [turnPrompt, setTurnPrompt] = useState("Player 1");
   const [isPlayer1Turn, setIsPlayer1Turn] = useState(true);
@@ -33,10 +35,11 @@ function App() {
     const stoneId = `${stoneNum}`;
     const isStoneSelected = selectedStones.includes(stoneId);
     const isStoneAvailable = !removedStones.includes(stoneId);
+    const isStoneWinning = winningStones.includes(stoneId);
     stoneElements.push(
       <btn
         style = {{ position: 'absolute', top: window.innerHeight/2 + 300 * Math.sin(stoneNum*2*Math.PI/size) - 50, right: window.innerWidth/2 + 300 * Math.cos(stoneNum*2*Math.PI/size) - 50}}
-        className={`stone ${isStoneAvailable ? (isStoneSelected ? 'selectedStone' : '') : 'takenStone'}`}
+        className={`stone ${isStoneAvailable ? (isStoneSelected ? 'selectedStone' : '') : 'takenStone'} ${isStoneWinning ? 'winningStone' : ''}`}
         key={stoneId}
         onClick={() => handleStoneClick(stoneId)}
       ></btn>
@@ -403,35 +406,8 @@ function App() {
     if (removedStones.length === size) {
       setIsGameOver(true);
     }
+    setWinningStonesVisible(false);
   }, [removedStones]);
-
-  // Use Mex values to analyze perfect play for the CPU.
-  /*
-  useEffect(() => {
-    console.log('calculating...\n');
-    let allPossibleStates = getAllStates(size);
-    console.log('All Possible States Found.\n');
-    let objArr = getAdjacencyObjects(allPossibleStates);
-    console.log('Adjacency Objects Found.\n');
-    let objsWithMex = setMexValues(objArr, size);
-    console.log('Mex Values Found.\n');
-    setAdjacencyObjs(objsWithMex);
-    if (isSimulation) {
-      let adjMatrix = getAdjacencyMatrix(objsWithMex);
-      console.log(adjMatrix);
-      console.log('Adjacency Matrix Found');
-      let cpu1ProbMatrix = getProbabilityMatrix(objsWithMex, computer1Logic, adjMatrix);
-      console.log(cpu1ProbMatrix);
-      let cpu2ProbMatrix = getProbabilityMatrix(objsWithMex, computer2Logic, adjMatrix);
-      let cpu1WinPercent = setComputerWinProbability(cpu1ProbMatrix, cpu2ProbMatrix);
-      console.log(cpu1WinPercent);
-      let cpu2WinPercent = 1 - cpu1WinPercent;
-      setCpu1WinPercentage(cpu1WinPercent);
-      setCpu2WinPercentage(cpu2WinPercent);
-    }
-    setIsLoading(false);
-  }, [isPreGame]);
-  */
 
   useEffect(() => {
     console.log('calculating...\n');
@@ -459,6 +435,20 @@ function App() {
     }
     setIsLoading(false);
   }, [isSimulation]);
+
+  useEffect(() => {
+    if (winningStonesVisible) {
+      let takenStones = [...removedStones];
+      let gameState = getGameState(takenStones);
+      if (gameState[0] == size) {
+        gameState = [size+'c'];
+      }
+      let newGameState = getCPUMove(gameState, "Perfect");
+      getWinningStones(newGameState, gameState, takenStones);
+    } else {
+      setWinningStones([]);
+    }
+  }, [winningStonesVisible]);
 
   // use perfectPlay, while losing choose the game state based on criteria when assigning next values.
   function getPerfectPlayMove(objList, gameState) {
@@ -662,6 +652,75 @@ function App() {
         console.log("Remove stones: " + startingStone);
         let startingStoneString = startingStone.toString();
         setRemovedStones([...takenStoneArr, startingStoneString]);
+      }
+  }
+
+  function getWinningStones (desiredGameState, currentGameState, takenStoneArr) {
+    if (desiredGameState == null) {
+      return;
+    }
+    let dgs = desiredGameState;
+    let cgs = currentGameState;
+    let desiredSum = 0;
+    let currentSum = 0;
+    let desiredDifferences = []
+    let currentDifferences = []
+    // First find the differences between the current state and the desired state
+    for (let stack = 0; stack < dgs.length;) {
+      let index = currentGameState.indexOf(dgs[0]);
+      if (index != -1) {
+        dgs.splice(0, 1);
+        cgs.splice(index, 1);
+      } else {
+        desiredDifferences.push(dgs[0]);
+        desiredSum = desiredSum + dgs[0];
+        dgs.splice(0,1);
+      }
+    }
+    for (let remaining = 0; remaining < cgs.length; remaining++) {
+      currentDifferences.push(cgs[remaining]);
+      currentSum = currentSum + cgs[remaining];
+    }
+    if (desiredDifferences.length == 0) {
+      desiredDifferences.push(0);
+    }
+    // Now we need to find which stones result in currentDifference.
+    let sortedRemovedStones = [];
+    for (let k = 0; k < takenStoneArr.length; k ++) {
+      sortedRemovedStones.push(parseInt(takenStoneArr[k]));
+    }
+    sortedRemovedStones = arrSort(sortedRemovedStones);
+    var startingStone = 0;
+    for (let i = 0; i < sortedRemovedStones.length - 1; i++) {
+      let difference = Math.abs(sortedRemovedStones[i + 1] - sortedRemovedStones[i]) - 1;
+      if (difference == currentDifferences[0]) {
+        startingStone = parseInt(sortedRemovedStones[i + 1]);
+      }
+    }
+    if (startingStone == 0 && sortedRemovedStones.length > 0) {
+      startingStone = parseInt(sortedRemovedStones[0]);
+    }
+    if (startingStone == 0 && sortedRemovedStones.length == 0) {
+      startingStone = 1;
+    }
+      startingStone = startingStone + parseInt(desiredDifferences[0]) + 1;
+      if (startingStone > size) {
+        startingStone = startingStone - size;
+      }
+      let additionalStone = startingStone + 1;
+      if (additionalStone > size) {
+        additionalStone = additionalStone - size;
+      }
+      // Carry out the moves the cpu would like to make.
+      if (currentSum - desiredSum == 2) {
+        console.log("Winning stones: " + startingStone + " " + additionalStone);
+        let startingStoneString = startingStone.toString();
+        let additionalStoneString = additionalStone.toString();
+        setWinningStones([startingStoneString, additionalStoneString]);
+      } else {
+        console.log("Winning stones: " + startingStone);
+        let startingStoneString = startingStone.toString();
+        setWinningStones([startingStoneString]);
       }
   }
 
@@ -1023,6 +1082,10 @@ function App() {
         <div className="stones">
         {!isSimulation && isGameOver && <h2 className={`prompt ${isPlayer1Turn ?  'p1' : 'p2'}`}>{turnPrompt} Wins!</h2>}
           {!isSimulation && !isGameOver && !isPreGame && <h3 className={`prompt ${isPlayer1Turn ?  'p1' : 'p2'}`}>{turnPrompt}'s Turn</h3>}
+          {!isSimulation && !isGameOver && !isPreGame && <input type="checkbox" id="cheat" name="cheat" value={winningStonesVisible} onChange= {() => setWinningStonesVisible(!winningStonesVisible)}></input>}
+          {!isSimulation && !isGameOver && !isPreGame && <label for="cheat"> Highlight Winning Moves</label>}
+          <br></br>
+          <br></br>
           {!isSimulation && !isGameOver && !isPreGame && !isLoading && isPlayer1Human && <btn className="selection" onClick = {() => handleSelectionConfirmation()}>Confirm Move</btn>}
           {!isSimulation && !isGameOver && !isPreGame && !isLoading && !isPlayer1Human && <btn className="selection" onClick = {() => handleSimulationMove()}>Make CPU Move</btn>}
           {!isSimulation && !isPreGame && stoneElements}
@@ -1047,7 +1110,7 @@ function App() {
             <h2>Computer 2 Winning State Moves: {cpu2Winning}</h2>
             </>}
             {!isPreGame && !isLoading && <btn className="selection" onClick = {() => handleNewGameSelection()}>Start New Game</btn>}
-            <p>Created by Caleb Anderson, University of Georgia Student</p>
+            {isPreGame && <p>Created by Caleb Anderson, University of Georgia Student</p>}
       </header>
     </div>
   );
