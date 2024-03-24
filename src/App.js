@@ -406,7 +406,15 @@ function App() {
     if (removedStones.length === size) {
       setIsGameOver(true);
     }
-    setWinningStonesVisible(false);
+    if (winningStonesVisible) {
+      let takenStones = [...removedStones];
+      let gameState = getGameState(takenStones);
+      if (gameState[0] == size) {
+        gameState = [size+'c'];
+      }
+      let newGameState = getCPUMove(gameState, "Perfect");
+      getWinningStones(newGameState, gameState, takenStones);
+    }
   }, [removedStones]);
 
   useEffect(() => {
