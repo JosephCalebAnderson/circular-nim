@@ -598,8 +598,8 @@ function App() {
     if (desiredGameState == null) {
       return;
     }
-    let dgs = desiredGameState;
-    let cgs = currentGameState;
+    let dgs = [...desiredGameState];
+    let cgs = [...currentGameState];
     let desiredSum = 0;
     let currentSum = 0;
     let desiredDifferences = []
