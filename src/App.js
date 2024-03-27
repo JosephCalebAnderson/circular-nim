@@ -405,15 +405,17 @@ function App() {
   useEffect(() => {
     if (removedStones.length === size) {
       setIsGameOver(true);
-    }
-    if (winningStonesVisible) {
-      let takenStones = [...removedStones];
-      let gameState = getGameState(takenStones);
-      if (gameState[0] == size) {
-        gameState = [size+'c'];
+      setWinningStonesVisible(false);
+    } else {
+      if (winningStonesVisible) {
+        let takenStones = [...removedStones];
+        let gameState = getGameState(takenStones);
+        if (gameState[0] == size) {
+          gameState = [size+'c'];
+        }
+        let newGameState = getCPUMove(gameState, "Perfect");
+        getWinningStones(newGameState, gameState, takenStones);
       }
-      let newGameState = getCPUMove(gameState, "Perfect");
-      getWinningStones(newGameState, gameState, takenStones);
     }
   }, [removedStones]);
 
@@ -827,6 +829,8 @@ function App() {
     setRemovedStones([]);
     setSelectedStones([]);
     setNumStonesSelected(0);
+    setWinningStones([]);
+    setWinningStonesVisible(false);
   }
 
   // Go back to the previous screen to make new selections
