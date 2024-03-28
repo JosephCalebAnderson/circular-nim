@@ -592,11 +592,14 @@ function App() {
     let winPercent = 0;
     let numMoves = size/2;
     let newMatrix = cpu1Prob;
+    console.log(newMatrix);
     let checkableIndex = newMatrix.length - 1;
     winPercent = winPercent + newMatrix[0][checkableIndex];
     for (let i = 1; i < numMoves; i ++) {
       newMatrix = multiplyMatricies(newMatrix,cpu2Prob);
+      console.log(newMatrix);
       newMatrix = multiplyMatricies(newMatrix,cpu1Prob);
+      console.log(newMatrix);
       winPercent = winPercent + newMatrix[0][checkableIndex];
     }
     return winPercent;
