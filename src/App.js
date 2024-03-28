@@ -849,12 +849,14 @@ function App() {
       setTurnPrompt("CPU 1");
     }
     setIsPlayer1Turn(true);
-    setIsGameOver(false);
     setRemovedStones([]);
     setSelectedStones([]);
     setNumStonesSelected(0);
     setWinningStones([]);
-    setWinningStonesVisible(false);
+    if (isGameOver) {
+      setWinningStonesVisible(false);
+    }
+    setIsGameOver(false);
   }
 
   // Go back to the previous screen to make new selections
