@@ -620,10 +620,13 @@ function App() {
     let currentDifferences = []
     // First find the differences between the current state and the desired state
     for (let stack = 0; stack < dgs.length;) {
-      let index = currentGameState.indexOf(dgs[0]);
+      // This line is causing issues because currentGameState and cgs are not the same.
+      let index = cgs.indexOf(dgs[0]);
+      console.log(index);
       if (index != -1) {
         dgs.splice(0, 1);
         cgs.splice(index, 1);
+        console.log(cgs);
       } else {
         desiredDifferences.push(dgs[0]);
         desiredSum = desiredSum + dgs[0];
@@ -637,6 +640,8 @@ function App() {
     if (desiredDifferences.length == 0) {
       desiredDifferences.push(0);
     }
+    console.log(desiredDifferences);
+    console.log(currentDifferences);
     // Now we need to find which stones result in currentDifference.
     let sortedRemovedStones = [];
     for (let k = 0; k < takenStoneArr.length; k ++) {
@@ -677,6 +682,7 @@ function App() {
       }
   }
 
+
   function getWinningStones (desiredGameState, currentGameState, takenStoneArr) {
     if (desiredGameState == null) {
       return;
@@ -689,10 +695,13 @@ function App() {
     let currentDifferences = []
     // First find the differences between the current state and the desired state
     for (let stack = 0; stack < dgs.length;) {
-      let index = currentGameState.indexOf(dgs[0]);
+      // This line is causing issues because currentGameState and cgs are not the same.
+      let index = cgs.indexOf(dgs[0]);
+      console.log(index);
       if (index != -1) {
         dgs.splice(0, 1);
         cgs.splice(index, 1);
+        console.log(cgs);
       } else {
         desiredDifferences.push(dgs[0]);
         desiredSum = desiredSum + dgs[0];
@@ -706,6 +715,8 @@ function App() {
     if (desiredDifferences.length == 0) {
       desiredDifferences.push(0);
     }
+    console.log(desiredDifferences);
+    console.log(currentDifferences);
     // Now we need to find which stones result in currentDifference.
     let sortedRemovedStones = [];
     for (let k = 0; k < takenStoneArr.length; k ++) {
@@ -725,26 +736,27 @@ function App() {
     if (startingStone == 0 && sortedRemovedStones.length == 0) {
       startingStone = 1;
     }
-      startingStone = startingStone + parseInt(desiredDifferences[0]) + 1;
-      if (startingStone > size) {
-        startingStone = startingStone - size;
-      }
-      let additionalStone = startingStone + 1;
-      if (additionalStone > size) {
-        additionalStone = additionalStone - size;
-      }
-      // Carry out the moves the cpu would like to make.
-      if (currentSum - desiredSum == 2) {
-        console.log("Winning stones: " + startingStone + " " + additionalStone);
-        let startingStoneString = startingStone.toString();
-        let additionalStoneString = additionalStone.toString();
-        setWinningStones([startingStoneString, additionalStoneString]);
-      } else {
-        console.log("Winning stones: " + startingStone);
-        let startingStoneString = startingStone.toString();
-        setWinningStones([startingStoneString]);
-      }
+    startingStone = startingStone + parseInt(desiredDifferences[0]) + 1;
+    if (startingStone > size) {
+      startingStone = startingStone - size;
+    }
+    let additionalStone = startingStone + 1;
+    if (additionalStone > size) {
+      additionalStone = additionalStone - size;
+    }
+    // Carry out the moves the cpu would like to make.
+    if (currentSum - desiredSum == 2) {
+      console.log("Winning stones: " + startingStone + " " + additionalStone);
+      let startingStoneString = startingStone.toString();
+      let additionalStoneString = additionalStone.toString();
+      setWinningStones([startingStoneString, additionalStoneString]);
+    } else {
+      console.log("Winning stones: " + startingStone);
+      let startingStoneString = startingStone.toString();
+      setWinningStones([startingStoneString]);
+    }
   }
+
 
   // Turn the UI into a game state that the cpu can understand.
   function getGameState(takenStoneArr) {
