@@ -444,8 +444,8 @@ function App() {
       let cpu1ProbMatrix = getProbabilityMatrix(adjacencyObjs, computer1Logic, adjacentMatrix);
       let cpu2ProbMatrix = getProbabilityMatrix(adjacencyObjs, computer2Logic, adjacentMatrix);
       console.log('Probability Matricies Found!\n');
-      let cpu1WinPercent = setComputerWinProbability(cpu1ProbMatrix, cpu2ProbMatrix);
-      let cpu2WinPercent = 1 - cpu1WinPercent;
+      let cpu2WinPercent = setComputerWinProbability(cpu1ProbMatrix, cpu2ProbMatrix);
+      let cpu1WinPercent = 1 - cpu2WinPercent;
       setCpu1WinPercentage(cpu1WinPercent);
       setCpu2WinPercentage(cpu2WinPercent);
     }
@@ -590,13 +590,13 @@ function App() {
 
   const setComputerWinProbability = (cpu1Prob, cpu2Prob) => {
     let winPercent = 0;
-    let numMoves = (size - 2)/2;
-    let newMatrix = multiplyMatricies(cpu1Prob,cpu2Prob);
+    let numMoves = size/2;
+    let newMatrix = cpu1Prob;
     let checkableIndex = newMatrix.length - 1;
     winPercent = winPercent + newMatrix[0][checkableIndex];
-    for (let i = 0; i < numMoves; i ++) {
-      newMatrix = multiplyMatricies(newMatrix,cpu1Prob);
+    for (let i = 1; i < numMoves; i ++) {
       newMatrix = multiplyMatricies(newMatrix,cpu2Prob);
+      newMatrix = multiplyMatricies(newMatrix,cpu1Prob);
       winPercent = winPercent + newMatrix[0][checkableIndex];
     }
     return winPercent;
@@ -811,17 +811,17 @@ function App() {
 
   // function used in the pregame circle size selector.
   function increaseSize1 () {
-    if (size < 25) {
+    if (size < 20) {
       setSize(size + 1);
     }
   }
 
   // function used in the pregame circle size selector.
   function increaseSize5 () {
-    if (size < 21) {
+    if (size < 16) {
       setSize(size + 5);
     } else {
-      setSize(25);
+      setSize(20);
     }
   }
 
