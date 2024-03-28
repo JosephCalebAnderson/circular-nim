@@ -414,7 +414,13 @@ function App() {
           gameState = [size+'c'];
         }
         let newGameState = getCPUMove(gameState, "Perfect");
-        getWinningStones(newGameState, gameState, takenStones);
+        let index = searchGameObjects(adjacencyObjs, newGameState);
+        let mex = adjacencyObjs[index].mex;
+        if (mex == 0) {
+          getWinningStones(newGameState, gameState, takenStones);
+        } else {
+          setWinningStones([]);
+        }
       }
     }
   }, [removedStones]);
@@ -454,7 +460,13 @@ function App() {
         gameState = [size+'c'];
       }
       let newGameState = getCPUMove(gameState, "Perfect");
-      getWinningStones(newGameState, gameState, takenStones);
+      let index = searchGameObjects(adjacencyObjs, newGameState);
+      let mex = adjacencyObjs[index].mex;
+      if (mex == 0) {
+        getWinningStones(newGameState, gameState, takenStones);
+      } else {
+        setWinningStones([]);
+      }
     } else {
       setWinningStones([]);
     }
@@ -993,6 +1005,8 @@ function App() {
     } else {
       newGameState = getCPUMove(gameState, computer2Logic);
     }
+    console.log(gameState);
+    console.log(newGameState);
     // Clear any user selections, block them from making another move while this move is made.
     setSelectedStones([]);
     setNumStonesSelected(0);
