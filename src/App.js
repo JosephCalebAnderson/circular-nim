@@ -580,15 +580,15 @@ function App() {
   }
 
   // multiply two matricies of the same size
-  const multiplyMatricies = (mat1, mat2) => {
+  const multiplyMatricies = (mat1, mat2, checkpoint1) => {
     let length  = mat1.length;
     let newMatrix = Array(length).fill(0).map(()=>Array(length).fill(0));
     for (let i = 0; i < length; i ++) {
       // j = i + 1 because if j < i + 2 it will result in a 0
       for (let j = i + 1; j < length; j ++) {
         let total = 0;
-        let start = i + 1;
-        if (j-i > 256) {
+        let start = checkpoint1;
+        if (j - checkpoint1 > 256) {
           start = j - 256;
         }
         // Will k > i + 1 and k < j help reduce the complexity
@@ -607,9 +607,14 @@ function App() {
     let newMatrix = cpu1Prob;
     let checkableIndex = newMatrix.length - 1;
     winPercent = winPercent + newMatrix[0][checkableIndex];
+    let checkpoints = [0];
+    for (let value = numMoves - 1; value > 0; value --) {
+      let index = searchGameObjects(adjacencyObjs, [value])
+      checkpoints.push(index);
+    }
     for (let i = 1; i < numMoves - 1; i = i + 2) {
-      newMatrix = multiplyMatricies(newMatrix,cpu2Prob);
-      newMatrix = multiplyMatricies(newMatrix,cpu1Prob);
+      newMatrix = multiplyMatricies(newMatrix,cpu2Prob, checkpoints[i-1]);
+      newMatrix = multiplyMatricies(newMatrix,cpu1Prob, checkpoints[i]);
       winPercent = winPercent + newMatrix[0][checkableIndex];
     }
     return winPercent;
