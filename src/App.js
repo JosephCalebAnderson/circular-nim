@@ -443,6 +443,25 @@ function App() {
     let objsWithMex = setMexValues(objArr, size);
     console.log('Mex Values Found.\n');
     setAdjacencyObjs(objsWithMex);
+    console.log(searchGameObjects(objsWithMex, [19]));
+    console.log(searchGameObjects(objsWithMex, [18]));
+    console.log(searchGameObjects(objsWithMex, [17]));
+    console.log(searchGameObjects(objsWithMex, [16]));
+    console.log(searchGameObjects(objsWithMex, [15]));
+    console.log(searchGameObjects(objsWithMex, [14]));
+    console.log(searchGameObjects(objsWithMex, [13]));
+    console.log(searchGameObjects(objsWithMex, [12]));
+    console.log(searchGameObjects(objsWithMex, [11]));
+    console.log(searchGameObjects(objsWithMex, [10]));
+    console.log(searchGameObjects(objsWithMex, [9]));
+    console.log(searchGameObjects(objsWithMex, [8]));
+    console.log(searchGameObjects(objsWithMex, [7]));
+    console.log(searchGameObjects(objsWithMex, [6]));
+    console.log(searchGameObjects(objsWithMex, [5]));
+    console.log(searchGameObjects(objsWithMex, [4]));
+    console.log(searchGameObjects(objsWithMex, [3]));
+    console.log(searchGameObjects(objsWithMex, [2]));
+    console.log(searchGameObjects(objsWithMex, [1]));
     setIsLoading(false);
   }, [size]);
 
@@ -587,8 +606,12 @@ function App() {
       // j = i + 1 because if j < i + 2 it will result in a 0
       for (let j = i + 1; j < length; j ++) {
         let total = 0;
-        // Will k > i and k < j help reduce the complexity???
-        for (let k = i + 1; k < j; k ++) {
+        let start = i + 1;
+        if (j-i > 256) {
+          start = j - 256;
+        }
+        // Will k > i + 1 and k < j help reduce the complexity
+        for (let k = start; k < j; k ++) {
           total = total + (mat1[i][k] * mat2[k][j]);
         }
         newMatrix[i][j] = total;
@@ -599,17 +622,13 @@ function App() {
 
   const setComputerWinProbability = (cpu1Prob, cpu2Prob) => {
     let winPercent = 0;
-    let numMoves = size/2;
+    let numMoves = size;
     let newMatrix = cpu1Prob;
-    console.log(cpu1Prob);
-    console.log(cpu2Prob);
     let checkableIndex = newMatrix.length - 1;
     winPercent = winPercent + newMatrix[0][checkableIndex];
-    for (let i = 1; i < numMoves; i ++) {
+    for (let i = 1; i < numMoves - 1; i = i + 2) {
       newMatrix = multiplyMatricies(newMatrix,cpu2Prob);
-      console.log(newMatrix);
       newMatrix = multiplyMatricies(newMatrix,cpu1Prob);
-      console.log(newMatrix);
       winPercent = winPercent + newMatrix[0][checkableIndex];
     }
     return winPercent;
