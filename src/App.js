@@ -443,25 +443,6 @@ function App() {
     let objsWithMex = setMexValues(objArr, size);
     console.log('Mex Values Found.\n');
     setAdjacencyObjs(objsWithMex);
-    console.log(searchGameObjects(objsWithMex, [19]));
-    console.log(searchGameObjects(objsWithMex, [18]));
-    console.log(searchGameObjects(objsWithMex, [17]));
-    console.log(searchGameObjects(objsWithMex, [16]));
-    console.log(searchGameObjects(objsWithMex, [15]));
-    console.log(searchGameObjects(objsWithMex, [14]));
-    console.log(searchGameObjects(objsWithMex, [13]));
-    console.log(searchGameObjects(objsWithMex, [12]));
-    console.log(searchGameObjects(objsWithMex, [11]));
-    console.log(searchGameObjects(objsWithMex, [10]));
-    console.log(searchGameObjects(objsWithMex, [9]));
-    console.log(searchGameObjects(objsWithMex, [8]));
-    console.log(searchGameObjects(objsWithMex, [7]));
-    console.log(searchGameObjects(objsWithMex, [6]));
-    console.log(searchGameObjects(objsWithMex, [5]));
-    console.log(searchGameObjects(objsWithMex, [4]));
-    console.log(searchGameObjects(objsWithMex, [3]));
-    console.log(searchGameObjects(objsWithMex, [2]));
-    console.log(searchGameObjects(objsWithMex, [1]));
     setIsLoading(false);
   }, [size]);
 
@@ -654,11 +635,9 @@ function App() {
     for (let stack = 0; stack < dgs.length;) {
       // This line is causing issues because currentGameState and cgs are not the same.
       let index = cgs.indexOf(dgs[0]);
-      console.log(index);
       if (index != -1) {
         dgs.splice(0, 1);
         cgs.splice(index, 1);
-        console.log(cgs);
       } else {
         desiredDifferences.push(dgs[0]);
         desiredSum = desiredSum + dgs[0];
@@ -672,8 +651,6 @@ function App() {
     if (desiredDifferences.length == 0) {
       desiredDifferences.push(0);
     }
-    console.log(desiredDifferences);
-    console.log(currentDifferences);
     // Now we need to find which stones result in currentDifference.
     let sortedRemovedStones = [];
     for (let k = 0; k < takenStoneArr.length; k ++) {
@@ -729,11 +706,9 @@ function App() {
     for (let stack = 0; stack < dgs.length;) {
       // This line is causing issues because currentGameState and cgs are not the same.
       let index = cgs.indexOf(dgs[0]);
-      console.log(index);
       if (index != -1) {
         dgs.splice(0, 1);
         cgs.splice(index, 1);
-        console.log(cgs);
       } else {
         desiredDifferences.push(dgs[0]);
         desiredSum = desiredSum + dgs[0];
@@ -747,8 +722,6 @@ function App() {
     if (desiredDifferences.length == 0) {
       desiredDifferences.push(0);
     }
-    console.log(desiredDifferences);
-    console.log(currentDifferences);
     // Now we need to find which stones result in currentDifference.
     let sortedRemovedStones = [];
     for (let k = 0; k < takenStoneArr.length; k ++) {
@@ -1051,8 +1024,6 @@ function App() {
     } else {
       newGameState = getCPUMove(gameState, computer2Logic);
     }
-    console.log(gameState);
-    console.log(newGameState);
     // Clear any user selections, block them from making another move while this move is made.
     setSelectedStones([]);
     setNumStonesSelected(0);
