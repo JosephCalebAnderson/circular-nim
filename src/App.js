@@ -238,6 +238,13 @@ function App() {
       return arr;
   }
 
+  function sortByRowSum(array) {
+    let sums = new Map(array.map(row =>
+      [row, row.reduce((sum, element) => sum + element, 0)]
+    ));
+    return array.sort((a, b) => sums.get(b) - sums.get(a));
+  }
+
   // create the adjacency objects with a list of game states.
   function getAdjacencyObjects (gameStatesArr){
       let count = gameStatesArr.length
@@ -428,6 +435,8 @@ function App() {
   useEffect(() => {
     console.log('calculating...\n');
     let allPossibleStates = getAllStates(size);
+    // Remove the following line if it causes issues. It effectively reorders the possible states.
+    allPossibleStates = sortByRowSum(allPossibleStates);
     console.log('All Possible States Found.\n');
     let objArr = getAdjacencyObjects(allPossibleStates);
     console.log('Adjacency Objects Found.\n');
@@ -592,7 +601,8 @@ function App() {
     let winPercent = 0;
     let numMoves = size/2;
     let newMatrix = cpu1Prob;
-    console.log(newMatrix);
+    console.log(cpu1Prob);
+    console.log(cpu2Prob);
     let checkableIndex = newMatrix.length - 1;
     winPercent = winPercent + newMatrix[0][checkableIndex];
     for (let i = 1; i < numMoves; i ++) {
