@@ -443,7 +443,6 @@ function App() {
     let objsWithMex = setMexValues(objArr, size);
     console.log('Mex Values Found.\n');
     setAdjacencyObjs(objsWithMex);
-    console.log(objsWithMex);
     setIsLoading(false);
   }, [size]);
 
@@ -471,8 +470,6 @@ function App() {
       }
       let newGameState = getCPUMove(gameState, "Perfect");
       let index = searchGameObjects(adjacencyObjs, newGameState);
-      console.log(gameState);
-      console.log(newGameState);
       let mex = adjacencyObjs[index].mex;
       if (mex == 0) {
         getWinningStones(newGameState, gameState, takenStones);
@@ -1144,7 +1141,7 @@ function App() {
         {!isSimulation && isGameOver && <h2 className={`prompt ${isPlayer1Turn ?  'p1' : 'p2'}`}>{turnPrompt} Wins!</h2>}
           {!isSimulation && !isGameOver && !isPreGame && <h3 className={`prompt ${isPlayer1Turn ?  'p1' : 'p2'}`}>{turnPrompt}'s Turn</h3>}
           {!isSimulation && !isGameOver && !isPreGame && <input type="checkbox" id="cheat" name="cheat" value={winningStonesVisible} onChange= {() => setWinningStonesVisible(!winningStonesVisible)}></input>}
-          {!isSimulation && !isGameOver && !isPreGame && <label for="cheat"> Highlight Winning Moves</label>}
+          {!isSimulation && !isGameOver && !isPreGame && <label for="cheat"> Highlight A Winning Move</label>}
           <br></br>
           <br></br>
           {!isSimulation && !isGameOver && !isPreGame && !isLoading && isPlayer1Human && <btn className="selection" onClick = {() => handleSelectionConfirmation()}>Confirm Move</btn>}
