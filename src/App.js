@@ -39,7 +39,7 @@ function App() {
     stoneElements.push(
       <btn
         style = {{ position: 'absolute', top: window.innerHeight/2 + 300 * Math.sin(stoneNum*2*Math.PI/size) - 50, right: window.innerWidth/2 + 300 * Math.cos(stoneNum*2*Math.PI/size) - 50}}
-        className={`stone ${isStoneAvailable ? (isStoneSelected ? 'selectedStone' : '') : 'takenStone'} ${isStoneWinning ? 'winningStone' : ''}`}
+        className={`basicStone ${isStoneAvailable ? (isStoneSelected ? 'selectedStone' : '') : 'takenStone'} ${isStoneWinning ? 'winningStone' : ''}`}
         key={stoneId}
         onClick={() => handleStoneClick(stoneId)}
       ></btn>
@@ -1124,17 +1124,19 @@ function App() {
       {isPreGame && <p>Created by Caleb Anderson, University of Georgia Undergraduate</p>}
 
 
-      <div className="stones">
+      {!isSimulation && <div className="gameplay">
         {!isSimulation && isGameOver && <h2 className={`prompt ${isPlayer1Turn ?  'p1' : 'p2'}`}>{turnPrompt} Wins!</h2>}
         {!isSimulation && !isGameOver && !isPreGame && <h3 className={`prompt ${isPlayer1Turn ?  'p1' : 'p2'}`}>{turnPrompt}'s Turn</h3>}
         {!isSimulation && !isGameOver && !isPreGame && <input type="checkbox" id="cheat" name="cheat" value={winningStonesVisible} onChange= {() => setWinningStonesVisible(!winningStonesVisible)}></input>}
         {!isSimulation && !isGameOver && !isPreGame && <label for="cheat"> Highlight A Winning Move</label>}
         {!isSimulation && !isGameOver && !isPreGame && !isLoading && isPlayer1Human && <btn className="selection" onClick = {() => handleSelectionConfirmation()}>Confirm Move</btn>}
         {!isSimulation && !isGameOver && !isPreGame && !isLoading && !isPlayer1Human && <btn className="selection" onClick = {() => handleSimulationMove()}>Make CPU Move</btn>}
+        {!isSimulation && !isPreGame && !isLoading && <btn className="selection" onClick = {() => handleResetGame()}>Reset Game</btn>}
         {!isSimulation && !isPreGame && stoneElements}
-      </div>
-      {!isSimulation && !isPreGame && !isLoading && <btn className="selection" onClick = {() => handleResetGame()}>Reset Game</btn>}
-      {isSimulation && !isPreGame && <div>
+      </div>}
+      
+      
+      {isSimulation && !isPreGame && <div className='simulation'>
         <h3>Number of Games:</h3>
         <select className = "dropdown" value={gameNum} onChange={(event) => setGameNum(event.target.value)}>
           <option value="10">10</option> 
@@ -1142,16 +1144,14 @@ function App() {
           <option value="1000">1000</option> 
           <option value="10000">10000</option>
         </select>
-      </div>}
-        {isSimulation && !isPreGame && <>
-          <btn className = "Game-option" onClick = {() => runCPUSimulations()}>Run Simulation</btn>
-          <h2>Computer 1 Expected Win Percentage: {cpu1WinPercentage}</h2>
-          <h2>Computer 1 Wins: {cpu1Wins}</h2>
-          <h2>Computer 1 Winning State Moves: {cpu1Winning}</h2>
-          <h2>Computer 2 Expected Win Percentage: {cpu2WinPercentage}</h2>
-          <h2>Computer 2 Wins: {cpu2Wins}</h2>
-          <h2>Computer 2 Winning State Moves: {cpu2Winning}</h2>
-        </>}
+        <btn className = "Game-option" onClick = {() => runCPUSimulations()}>Run Simulation</btn>
+        <h2>Computer 1 Expected Win Percentage: {cpu1WinPercentage}</h2>
+        <h2>Computer 1 Wins: {cpu1Wins}</h2>
+        <h2>Computer 1 Winning State Moves: {cpu1Winning}</h2>
+        <h2>Computer 2 Expected Win Percentage: {cpu2WinPercentage}</h2>
+        <h2>Computer 2 Wins: {cpu2Wins}</h2>
+        <h2>Computer 2 Winning State Moves: {cpu2Winning}</h2>
+        </div>}
         {!isPreGame && !isLoading && <btn className="selection" onClick = {() => handleNewGameSelection()}>Start New Game</btn>}
     </div>
   );

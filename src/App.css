@@ -13,6 +13,21 @@
   color: white;
 }
 
+.basicStone {
+  cursor: pointer;
+  background-color: lightgray;
+  color: black;
+  border-radius: 50%;
+  border: 5px solid;
+  border-color: black;
+  padding: 50px 50px;
+  transition-duration: 0.4s;
+}
+
+.basicStone:hover {
+  background-color: gray; /* Green */
+}
+
 .computerDiff {
   display: flex;
   justify-content: center;
@@ -22,6 +37,11 @@
 
 .dropdown {
   cursor: pointer;
+}
+
+.gameplay{
+  display: flex;
+  align-items: center;
 }
 
 .Game-option {
@@ -72,26 +92,19 @@
   margin: 20px;
 }
 
+.simulation{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
 .sizeSelector {
   display: flex;
   justify-content: center;
   align-items: center;
   flex-wrap: wrap;
-}
-
-.stone {
-  cursor: pointer;
-  background-color: lightgray;
-  color: black;
-  border-radius: 50%;
-  border: 5px solid;
-  border-color: black;
-  padding: 50px 50px;
-  transition-duration: 0.4s;
-}
-
-.stone:hover {
-  background-color: gray; /* Green */
 }
 
 .takenStone {
