@@ -443,6 +443,7 @@ function App() {
     let objsWithMex = setMexValues(objArr, size);
     console.log('Mex Values Found.\n');
     setAdjacencyObjs(objsWithMex);
+    console.log(objsWithMex);
     setIsLoading(false);
   }, [size]);
 
@@ -470,6 +471,8 @@ function App() {
       }
       let newGameState = getCPUMove(gameState, "Perfect");
       let index = searchGameObjects(adjacencyObjs, newGameState);
+      console.log(gameState);
+      console.log(newGameState);
       let mex = adjacencyObjs[index].mex;
       if (mex == 0) {
         getWinningStones(newGameState, gameState, takenStones);
@@ -632,6 +635,9 @@ function App() {
     }
     let dgs = [...desiredGameState];
     let cgs = [...currentGameState];
+    if (takenStoneArr.length == 0) {
+      cgs = [size];
+    }
     let desiredSum = 0;
     let currentSum = 0;
     let desiredDifferences = []
@@ -703,6 +709,9 @@ function App() {
     }
     let dgs = [...desiredGameState];
     let cgs = [...currentGameState];
+    if (takenStoneArr.length == 0) {
+      cgs = [size];
+    }
     let desiredSum = 0;
     let currentSum = 0;
     let desiredDifferences = []
