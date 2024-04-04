@@ -1152,6 +1152,8 @@ function App() {
         <h2>Computer 2 Wins: {cpu2Wins}</h2>
         <h2>Computer 2 Winning State Moves: {cpu2Winning}</h2>
         </div>}
+        
+        
         {!isPreGame && !isLoading && <btn className="selection" onClick = {() => handleNewGameSelection()}>Start New Game</btn>}
     </div>
   );
