@@ -825,38 +825,6 @@ function App() {
     setisSimultation(true);
   }
 
-  // function used in the pregame circle size selector.
-  function increaseSize1 () {
-    if (size < 20) {
-      setSize(size + 1);
-    }
-  }
-
-  // function used in the pregame circle size selector.
-  function increaseSize5 () {
-    if (size < 16) {
-      setSize(size + 5);
-    } else {
-      setSize(20);
-    }
-  }
-
-  // function used in the pregame circle size selector.
-  function decreaseSize1 () {
-    if (size > 4) {
-      setSize(size - 1);
-    }
-  }
-
-  // function used in the pregame circle size selector.
-  function decreaseSize5 () {
-    if (size > 8) {
-      setSize(size - 5);
-    } else {
-      setSize(4);
-    }
-  }
-
   // Reset the current game with the same initial conditions
   const handleResetGame = () => {
     if (isPlayer1Human) {
@@ -1096,47 +1064,67 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-      {isPreGame && <h3 className = "Size-change" onClick = {() => increaseSize5()}>Increase +5</h3>}
-        {isPreGame && <h3 className = "Size-change" onClick = {() => increaseSize1()}>Increase +1</h3>}
-        {isPreGame && <h3>Circle Size: {size}</h3>}
-        {isPreGame && <h3 className = "Size-change" onClick = {() => decreaseSize1()}>Decrease -1</h3>}
-        {isPreGame && <h3 className = "Size-change" onClick = {() => decreaseSize5()}>Decrease -5</h3>}
-        {isPreGame && <h3>Select Computer Difficulty Below:</h3>}
-        {isPreGame && <div>
-          <h5>Computer 1:</h5>
-          <select className = "dropdown" value={computer1Logic} onChange={(event) => setComputer1Logic(event.target.value)}>
-          <option value="Perfect">Perfect</option> 
-          <option value="Random">Random</option> 
-          <option value="coinflip">Coin Flip</option>
-          <option value="stingsOnly">Strings Only</option> 
-          <option value="stonesOnly">Stones Only</option>
-          <option value="bothEasy">Easy</option>
-          <option value="bothMedium">Medium</option>
-          <option value="bothHard">Hard</option>
-          <option value="testing">testing</option>  
+        {isPreGame && <div className='sizeSelector'>
+          <h3>Circle Size:</h3>
+          <select className = "dropdown" value={size} onChange={(event) => setSize(event.target.value)}>
+            <option value="4">4</option> 
+            <option value="5">5</option> 
+            <option value="6">6</option> 
+            <option value="7">7</option>
+            <option value="8">8</option> 
+            <option value="9">9</option> 
+            <option value="10">10</option>
+            <option value="11">11</option>
+            <option value="12">12</option>
+            <option value="13">13</option>
+            <option value="14">14</option>
+            <option value="15">15</option>
+            <option value="16">16</option>
+            <option value="17">17</option>
+            <option value="18">18</option>
+            <option value="19">19</option>
+            <option value="20">20</option> 
           </select>
         </div>}
-        {isPreGame && <div>
-          <h5>Computer 2:</h5>
-          <select className = "dropdown" value={computer2Logic} onChange={(event) => setComputer2Logic(event.target.value)}>
-          <option value="Perfect">Perfect</option> 
-          <option value="Random">Random</option> 
-          <option value="coinflip">Coin Flip</option>
-          <option value="stingsOnly">Strings Only</option> 
-          <option value="stonesOnly">Stones Only</option>
-          <option value="bothEasy">Easy</option>
-          <option value="bothMedium">Medium</option>
-          <option value="bothHard">Hard</option>
-          <option value="testing">testing</option>  
-          </select>
+        {isPreGame && <div className = "computerDiff">
+          <h3>Select CPU Difficulty:</h3>
+          <div className='indvCPU'>
+            <h5>Computer 1</h5>
+            <select className = "dropdown" value={computer1Logic} onChange={(event) => setComputer1Logic(event.target.value)}>
+            <option value="Perfect">Perfect</option> 
+            <option value="Random">Random</option> 
+            <option value="coinflip">Coin Flip</option>
+            <option value="stingsOnly">Strings Only</option> 
+            <option value="stonesOnly">Stones Only</option>
+            <option value="bothEasy">Easy</option>
+            <option value="bothMedium">Medium</option>
+            <option value="bothHard">Hard</option> 
+            </select>
+          </div>
+          <div className='indvCPU'>
+            <h5>Computer 2</h5>
+            <select className = "dropdown" value={computer2Logic} onChange={(event) => setComputer2Logic(event.target.value)}>
+            <option value="Perfect">Perfect</option> 
+            <option value="Random">Random</option> 
+            <option value="coinflip">Coin Flip</option>
+            <option value="stingsOnly">Strings Only</option> 
+            <option value="stonesOnly">Stones Only</option>
+            <option value="bothEasy">Easy</option>
+            <option value="bothMedium">Medium</option>
+            <option value="bothHard">Hard</option> 
+            </select>
+          </div>
         </div>}
-        <div>
-          {isPreGame && <h3>Which type of game would you like to play?</h3>}
-          {isPreGame && <btn className = "Game-option" onClick = {() => handleGame1Click()}>Player Vs Player</btn>}
-          {isPreGame && <btn className = "Game-option" onClick = {() => handleGame2Click()}>Player Vs Computer</btn>}
-          {isPreGame && <btn className = "Game-option" onClick = {() => handleGame3Click()}>Computer Vs Computer</btn>}
-          {isPreGame && <btn className = "Game-option" onClick = {() => handleGame4Click()}>Run Simulations</btn>}
-        </div>
+        {isPreGame && <div className='gameSelection'>
+          <h3>Which type of game would you like to play?</h3>
+          <btn className = "Game-option" onClick = {() => handleGame1Click()}>Player Vs Player</btn>
+          <btn className = "Game-option" onClick = {() => handleGame2Click()}>Player Vs Computer</btn>
+          <btn className = "Game-option" onClick = {() => handleGame3Click()}>Computer Vs Computer</btn>
+          <btn className = "Game-option" onClick = {() => handleGame4Click()}>Run Simulations</btn>
+        </div>}
+        {isPreGame && <p>Created by Caleb Anderson, University of Georgia Undergraduate</p>}
+
+
         <div className="stones">
         {!isSimulation && isGameOver && <h2 className={`prompt ${isPlayer1Turn ?  'p1' : 'p2'}`}>{turnPrompt} Wins!</h2>}
           {!isSimulation && !isGameOver && !isPreGame && <h3 className={`prompt ${isPlayer1Turn ?  'p1' : 'p2'}`}>{turnPrompt}'s Turn</h3>}
@@ -1168,7 +1156,6 @@ function App() {
             <h2>Computer 2 Winning State Moves: {cpu2Winning}</h2>
             </>}
             {!isPreGame && !isLoading && <btn className="selection" onClick = {() => handleNewGameSelection()}>Start New Game</btn>}
-            {isPreGame && <p>Created by Caleb Anderson, University of Georgia Student</p>}
       </header>
     </div>
   );
