@@ -872,9 +872,13 @@ function App() {
   // Go back to the previous screen to make new selections
   const handleNewGameSelection = () => {
     handleResetGame();
-    setSize(15);
+    setWinningStonesVisible(false);
     setTurnPrompt("Player 1");
     setIsPreGame(true);
+    setCpu1Wins(0);
+    setCpu2Wins(0);
+    setCPU1Winning(0);
+    setCPU2Winning(0);
     setisSimultation(false);
   }
 
