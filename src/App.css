@@ -49,9 +49,17 @@ html {
   border-radius: 5px;
   caret-color: white;
   border: 1px solid white;
-  width: 290px;
+  width: 100px;
   height: 30px;
   padding-left: 10px;
+  margin-left: 10px;
+}
+
+.footer{
+  text-align: center;
+  position: fixed;
+  bottom: 10px;
+  width: 100%;
 }
 
 .gameplay{
@@ -60,9 +68,16 @@ html {
   align-items: center;
 }
 
-.gameSelection {
+.gameOptions{
   display: flex;
   flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.gameSelection {
+  display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
 }
@@ -170,9 +185,8 @@ html {
   border-radius: 5px;
   background: #BE123C;
   border: none;
-  width: 305px;
-  height: 32px;
-  margin: 20px 0px 0px 0px;
+  padding: 0px 10px;
+  margin: 0px 10px;
   transition: background 0.2s;
 }
  
@@ -184,6 +198,10 @@ html {
  
 .buttons:active {
   background:#8A0B2A;
+}
+
+.homeScreen{
+  
 }
  
  
