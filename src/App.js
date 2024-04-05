@@ -1130,7 +1130,7 @@ function App() {
 
 
       {!isSimulation && !isPreGame && <div className="gameplay">
-        {!isLoading && <btn className="buttons" onClick = {() => handleNewGameSelection()}>Start New Game</btn>}
+        {!isLoading && <btn className="buttons" onClick = {() => handleNewGameSelection()}>←</btn>}
         {isGameOver && <h2 className={`prompt ${isPlayer1Turn ?  'p1' : 'p2'}`}>{turnPrompt} Wins!</h2>}
         {!isGameOver && <h3 className={`prompt ${isPlayer1Turn ?  'p1' : 'p2'}`}>{turnPrompt}'s Turn</h3>}
         {!isGameOver && !isLoading && isPlayer1Human && <btn className="buttons" onClick = {() => handleSelectionConfirmation()}>Confirm Move</btn>}
@@ -1175,7 +1175,7 @@ function App() {
             <h2>{cpu2Winning}</h2>
           </div>
         </div>
-        {!isPreGame && !isLoading && <btn className="buttons" onClick = {() => handleNewGameSelection()}>Start New Game</btn>}
+        {!isPreGame && !isLoading && <btn className="buttons" onClick = {() => handleNewGameSelection()}>←</btn>}
       </div>}
     </div>
   );

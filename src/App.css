@@ -1,5 +1,5 @@
 html {
-  background-color: #282c34;
+  background-color: #212121;
 }
 
 .App {
@@ -7,6 +7,7 @@ html {
   color: white;
   min-height: 100vh;
   font-size: calc(10px + 2vmin);
+  font-family: DM Sans;
 }
 
 .App-header {
@@ -49,7 +50,7 @@ html {
   border-radius: 5px;
   caret-color: white;
   border: 1px solid white;
-  width: 100px;
+  width: 150px;
   height: 30px;
   padding-left: 10px;
   margin-left: 10px;
@@ -116,7 +117,7 @@ html {
 .simulation{
   display: flex;
   flex-direction: column;
-  justify-content: space-evenly;
+  justify-content: space-around;
   flex-wrap: wrap;
   align-items: center;
 }
@@ -186,7 +187,7 @@ html {
   background: #BE123C;
   border: none;
   padding: 0px 10px;
-  margin: 0px 10px;
+  margin: 10px 10px;
   transition: background 0.2s;
 }
  
@@ -201,7 +202,7 @@ html {
 }
 
 .homeScreen{
-  
+  height: 100%;
 }
  
  
