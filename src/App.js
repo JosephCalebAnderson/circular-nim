@@ -1132,6 +1132,7 @@ function App() {
         {!isSimulation && !isGameOver && !isPreGame && !isLoading && isPlayer1Human && <btn className="selection" onClick = {() => handleSelectionConfirmation()}>Confirm Move</btn>}
         {!isSimulation && !isGameOver && !isPreGame && !isLoading && !isPlayer1Human && <btn className="selection" onClick = {() => handleSimulationMove()}>Make CPU Move</btn>}
         {!isSimulation && !isPreGame && !isLoading && <btn className="selection" onClick = {() => handleResetGame()}>Reset Game</btn>}
+        {!isPreGame && !isLoading && <btn className="selection" onClick = {() => handleNewGameSelection()}>Start New Game</btn>}
         {!isSimulation && !isPreGame && stoneElements}
       </div>}
       
@@ -1151,10 +1152,8 @@ function App() {
         <h2>Computer 2 Expected Win Percentage: {cpu2WinPercentage}</h2>
         <h2>Computer 2 Wins: {cpu2Wins}</h2>
         <h2>Computer 2 Winning State Moves: {cpu2Winning}</h2>
-        </div>}
-        
-        
         {!isPreGame && !isLoading && <btn className="selection" onClick = {() => handleNewGameSelection()}>Start New Game</btn>}
+      </div>}
     </div>
   );
 }
