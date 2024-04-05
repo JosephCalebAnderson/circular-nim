@@ -38,7 +38,7 @@ function App() {
     const isStoneWinning = winningStones.includes(stoneId);
     stoneElements.push(
       <btn
-        style = {{ position: 'absolute', top: window.innerHeight/2 + 300 * Math.sin(stoneNum*2*Math.PI/size) - 50, right: window.innerWidth/2 + 300 * Math.cos(stoneNum*2*Math.PI/size) - 50}}
+        style = {{ position: 'absolute', top: window.innerHeight/2 + 250 * Math.sin(stoneNum*2*Math.PI/size) - 50, right: window.innerWidth/2 + 250 * Math.cos(stoneNum*2*Math.PI/size) - 50}}
         className={`basicStone ${isStoneAvailable ? (isStoneSelected ? 'selectedStone' : '') : 'takenStone'} ${isStoneWinning ? 'winningStone' : ''}`}
         key={stoneId}
         onClick={() => handleStoneClick(stoneId)}
