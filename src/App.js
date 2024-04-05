@@ -1146,12 +1146,28 @@ function App() {
           <option value="10000">10000</option>
         </select>
         <btn className = "Game-option" onClick = {() => runCPUSimulations()}>Run Simulation</btn>
-        <h2>Computer 1 Expected Win Percentage: {cpu1WinPercentage}</h2>
-        <h2>Computer 1 Wins: {cpu1Wins}</h2>
-        <h2>Computer 1 Winning State Moves: {cpu1Winning}</h2>
-        <h2>Computer 2 Expected Win Percentage: {cpu2WinPercentage}</h2>
-        <h2>Computer 2 Wins: {cpu2Wins}</h2>
-        <h2>Computer 2 Winning State Moves: {cpu2Winning}</h2>
+        <div className = 'stats'>
+          <div className = 'row'>
+            <h2>Statistics</h2>
+            <h2>CPU1</h2>
+            <h2>CPU2</h2>
+          </div>
+          <div className = 'row'>
+            <h2>Theoretical Win Percentage</h2>
+            <h2>{cpu1WinPercentage}</h2>
+            <h2>{cpu2WinPercentage}</h2>
+          </div>
+          <div className = 'row'>
+            <h2>Wins</h2>
+            <h2>{cpu1Wins}</h2>
+            <h2>{cpu2Wins}</h2>
+          </div>
+          <div className = 'row'>
+            <h2>Winning Moves Made</h2>
+            <h2>{cpu1Winning}</h2>
+            <h2>{cpu2Winning}</h2>
+          </div>
+        </div>
         {!isPreGame && !isLoading && <btn className="selection" onClick = {() => handleNewGameSelection()}>Start New Game</btn>}
       </div>}
     </div>
