@@ -44,6 +44,14 @@ html {
 
 .dropdown {
   cursor: pointer;
+  background-color: transparent;
+  color: white;
+  border-radius: 5px;
+  caret-color: white;
+  border: 1px solid white;
+  width: 290px;
+  height: 30px;
+  padding-left: 10px;
 }
 
 .gameplay{
@@ -130,20 +138,18 @@ html {
   height: 1.5rem;
   border: 2px solid #ccc;
   border-radius: 0.25rem;
-  cursor: pointer;
   transform: translate(50%, 40%);
+  cursor: pointer;
+}
  
  
- }
- 
- 
- .checkboxInput:checked {
+.checkboxInput:checked {
   background-color: #BE123C;
   border-color: #BE123C;
- }
+}
  
  
- .checkboxInput:checked::before {
+.checkboxInput:checked::before {
   content: "\2713";
   display: block;
   width: 1rem;
@@ -157,9 +163,10 @@ html {
   position: absolute;
   top: 0.25rem;
   left: 0.25rem;
- }
+}
 
- .buttons {
+.buttons {
+  cursor: pointer;
   border-radius: 5px;
   background: #BE123C;
   border: none;
@@ -167,16 +174,16 @@ html {
   height: 32px;
   margin: 20px 0px 0px 0px;
   transition: background 0.2s;
- }
+}
  
  
- .buttons:hover {
+.buttons:hover {
   background: #FF3E63;
- }
+}
  
  
- .buttons:active {
+.buttons:active {
   background:#8A0B2A;
- }
+}
  
  
