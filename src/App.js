@@ -1124,16 +1124,18 @@ function App() {
       {isPreGame && <p>Created by Caleb Anderson, University of Georgia Undergraduate</p>}
 
 
-      {!isSimulation && <div className="gameplay">
-        {!isSimulation && isGameOver && <h2 className={`prompt ${isPlayer1Turn ?  'p1' : 'p2'}`}>{turnPrompt} Wins!</h2>}
-        {!isSimulation && !isGameOver && !isPreGame && <h3 className={`prompt ${isPlayer1Turn ?  'p1' : 'p2'}`}>{turnPrompt}'s Turn</h3>}
-        {!isSimulation && !isGameOver && !isPreGame && <input type="checkbox" id="cheat" name="cheat" value={winningStonesVisible} onChange= {() => setWinningStonesVisible(!winningStonesVisible)}></input>}
-        {!isSimulation && !isGameOver && !isPreGame && <label for="cheat"> Highlight A Winning Move</label>}
-        {!isSimulation && !isGameOver && !isPreGame && !isLoading && isPlayer1Human && <btn className="selection" onClick = {() => handleSelectionConfirmation()}>Confirm Move</btn>}
-        {!isSimulation && !isGameOver && !isPreGame && !isLoading && !isPlayer1Human && <btn className="selection" onClick = {() => handleSimulationMove()}>Make CPU Move</btn>}
-        {!isSimulation && !isPreGame && !isLoading && <btn className="selection" onClick = {() => handleResetGame()}>Reset Game</btn>}
-        {!isPreGame && !isLoading && <btn className="selection" onClick = {() => handleNewGameSelection()}>Start New Game</btn>}
-        {!isSimulation && !isPreGame && stoneElements}
+      {!isSimulation && !isPreGame && <div className="gameplay">
+        {!isLoading && <btn className="selection" onClick = {() => handleNewGameSelection()}>Start New Game</btn>}
+        {isGameOver && <h2 className={`prompt ${isPlayer1Turn ?  'p1' : 'p2'}`}>{turnPrompt} Wins!</h2>}
+        {!isGameOver && <h3 className={`prompt ${isPlayer1Turn ?  'p1' : 'p2'}`}>{turnPrompt}'s Turn</h3>}
+        {!isGameOver && !isLoading && isPlayer1Human && <btn className="selection" onClick = {() => handleSelectionConfirmation()}>Confirm Move</btn>}
+        {!isGameOver && !isLoading && !isPlayer1Human && <btn className="selection" onClick = {() => handleSimulationMove()}>Make CPU Move</btn>}
+        {!isGameOver && <div>
+          <label for="cheat"> Highlight A Winning Move</label>
+          <input type="checkbox" id="cheat" name="cheat" value={winningStonesVisible} onChange= {() => setWinningStonesVisible(!winningStonesVisible)}></input>
+        </div>}
+        {!isLoading && <btn className="selection" onClick = {() => handleResetGame()}>Reset Game</btn>}
+        {stoneElements}
       </div>}
       
       
