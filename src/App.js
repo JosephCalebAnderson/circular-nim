@@ -1130,7 +1130,6 @@ function App() {
 
 
       {!isSimulation && !isPreGame && <div className="gameplay">
-        {!isLoading && <btn className="buttons" onClick = {() => handleNewGameSelection()}>←</btn>}
         {isGameOver && <h2 className={`prompt ${isPlayer1Turn ?  'p1' : 'p2'}`}>{turnPrompt} Wins!</h2>}
         {!isGameOver && <h3 className={`prompt ${isPlayer1Turn ?  'p1' : 'p2'}`}>{turnPrompt}'s Turn</h3>}
         {!isGameOver && !isLoading && isPlayer1Human && <btn className="buttons" onClick = {() => handleSelectionConfirmation()}>Confirm Move</btn>}
@@ -1140,6 +1139,7 @@ function App() {
           <input className = 'checkboxInput' type="checkbox" id="cheat" name="cheat" value={winningStonesVisible} onChange= {() => setWinningStonesVisible(!winningStonesVisible)}></input>
         </div>}
         {!isLoading && <btn className="buttons" onClick = {() => handleResetGame()}>Reset Game</btn>}
+        {!isLoading && <btn className="buttons" onClick = {() => handleNewGameSelection()}>←</btn>}
         {stoneElements}
       </div>}
       
