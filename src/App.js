@@ -38,9 +38,10 @@ function App() {
     const isStoneWinning = winningStones.includes(stoneId);
     // get the smallest dimension to place the stones
     let minDim = Math.min(window.innerHeight, window.innerWidth);
+    let minDistance = Math.max(minDim/3, 200);
     stoneElements.push(
       <btn
-        style = {{ position: 'absolute', top: window.innerHeight/2 + minDim/3 * Math.sin(stoneNum*2*Math.PI/size) - 50, right: window.innerWidth/2 + minDim/3 * Math.cos(stoneNum*2*Math.PI/size) - 50}}
+        style = {{ position: 'absolute', top: window.innerHeight/2 + minDistance * Math.sin(stoneNum*2*Math.PI/size) - minDim/20, right: window.innerWidth/2 + minDistance * Math.cos(stoneNum*2*Math.PI/size) - minDim/20, padding: minDim/20}}
         className={`basicStone ${isStoneAvailable ? (isStoneSelected ? 'selectedStone' : '') : 'takenStone'} ${isStoneWinning ? 'winningStone' : ''}`}
         key={stoneId}
         onClick={() => handleStoneClick(stoneId)}
