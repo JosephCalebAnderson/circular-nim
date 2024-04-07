@@ -27,58 +27,25 @@ function App() {
   const [cpu2Wins, setCpu2Wins] = useState(0);
   const [cpu1Winning, setCPU1Winning] = useState(0);
   const [cpu2Winning, setCPU2Winning] = useState(0);
-  const [stoneElements, setStoneElements] = useState([]);
-    const handleWindowSizeChange = () => {
-      let stones = [];
-      for (let stoneNum = 1; stoneNum <= size; stoneNum++) {
-        // create a unique stoneID, and control placement + identifiers
-        const stoneId = `${stoneNum}`;
-        const isStoneSelected = selectedStones.includes(stoneId);
-        const isStoneAvailable = !removedStones.includes(stoneId);
-        const isStoneWinning = winningStones.includes(stoneId);
-        // get the smallest dimension to place the stones
-        let minDim = Math.min(window.innerHeight, window.innerWidth);
-        let minDistance = Math.max(minDim/3, 175);
-        stones.push(
-          <btn
-            style = {{ position: 'absolute', top: window.innerHeight/2 + minDistance * Math.sin(stoneNum*2*Math.PI/size) - minDim/20, right: window.innerWidth/2 + minDistance * Math.cos(stoneNum*2*Math.PI/size) - minDim/20, padding: minDim/20}}
-            className={`basicStone ${isStoneAvailable ? (isStoneSelected ? 'selectedStone' : '') : 'takenStone'} ${isStoneWinning ? 'winningStone' : ''}`}
-            key={stoneId}
-            onClick={() => handleStoneClick(stoneId)}
-          ></btn>
-        );
-          
-      }
-      setStoneElements(stones);
-    };
-
-    useEffect(() => {
-      let stones = [];
-      for (let stoneNum = 1; stoneNum <= size; stoneNum++) {
-        // create a unique stoneID, and control placement + identifiers
-        const stoneId = `${stoneNum}`;
-        const isStoneSelected = selectedStones.includes(stoneId);
-        const isStoneAvailable = !removedStones.includes(stoneId);
-        const isStoneWinning = winningStones.includes(stoneId);
-        // get the smallest dimension to place the stones
-        let minDim = Math.min(window.innerHeight, window.innerWidth);
-        let minDistance = Math.max(minDim/3, 175);
-        stones.push(
-          <btn
-            style = {{ position: 'absolute', top: window.innerHeight/2 + minDistance * Math.sin(stoneNum*2*Math.PI/size) - minDim/20, right: window.innerWidth/2 + minDistance * Math.cos(stoneNum*2*Math.PI/size) - minDim/20, padding: minDim/20}}
-            className={`basicStone ${isStoneAvailable ? (isStoneSelected ? 'selectedStone' : '') : 'takenStone'} ${isStoneWinning ? 'winningStone' : ''}`}
-            key={stoneId}
-            onClick={() => handleStoneClick(stoneId)}
-          ></btn>
-        );
-          
-      }
-      setStoneElements(stones);
-      window.addEventListener('resize', handleWindowSizeChange);
-      return () => {
-          window.removeEventListener('resize', handleWindowSizeChange);
-      };
-  }, []);
+  var stoneElements = [];
+  for (let stoneNum = 1; stoneNum <= size; stoneNum++) {
+    // create a unique stoneID, and control placement + identifiers
+    const stoneId = `${stoneNum}`;
+    const isStoneSelected = selectedStones.includes(stoneId);
+    const isStoneAvailable = !removedStones.includes(stoneId);
+    const isStoneWinning = winningStones.includes(stoneId);
+    // get the smallest dimension to place the stones
+    let minDim = Math.min(window.innerHeight, window.innerWidth);
+    let minDistance = Math.max(minDim/3, 175);
+    stoneElements.push(
+      <btn
+        style = {{ position: 'absolute', top: window.innerHeight/2 + minDistance * Math.sin(stoneNum*2*Math.PI/size) - minDim/20, right: window.innerWidth/2 + minDistance * Math.cos(stoneNum*2*Math.PI/size) - minDim/20, padding: minDim/20}}
+        className={`basicStone ${isStoneAvailable ? (isStoneSelected ? 'selectedStone' : '') : 'takenStone'} ${isStoneWinning ? 'winningStone' : ''}`}
+        key={stoneId}
+        onClick={() => handleStoneClick(stoneId)}
+      ></btn>
+    );         
+  }
 
   // Here is the start of functions that initialize the game before any moves are made.
   function getPartition(p, n) {
@@ -860,6 +827,25 @@ function App() {
 
   // Reset the current game with the same initial conditions
   const handleResetGame = () => {
+    let stoneElements = [];
+    for (let stoneNum = 1; stoneNum <= size; stoneNum++) {
+      // create a unique stoneID, and control placement + identifiers
+      const stoneId = `${stoneNum}`;
+      const isStoneSelected = selectedStones.includes(stoneId);
+      const isStoneAvailable = !removedStones.includes(stoneId);
+      const isStoneWinning = winningStones.includes(stoneId);
+      // get the smallest dimension to place the stones
+      let minDim = Math.min(window.innerHeight, window.innerWidth);
+      let minDistance = Math.max(minDim/3, 175);
+      stoneElements.push(
+        <btn
+          style = {{ position: 'absolute', top: window.innerHeight/2 + minDistance * Math.sin(stoneNum*2*Math.PI/size) - minDim/20, right: window.innerWidth/2 + minDistance * Math.cos(stoneNum*2*Math.PI/size) - minDim/20, padding: minDim/20}}
+          className={`basicStone ${isStoneAvailable ? (isStoneSelected ? 'selectedStone' : '') : 'takenStone'} ${isStoneWinning ? 'winningStone' : ''}`}
+          key={stoneId}
+          onClick={() => handleStoneClick(stoneId)}
+        ></btn>
+      );         
+    }
     if (isPlayer1Human) {
       setTurnPrompt("Player 1");
     } else {
