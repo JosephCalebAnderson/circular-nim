@@ -38,7 +38,7 @@ function App() {
         const isStoneWinning = winningStones.includes(stoneId);
         // get the smallest dimension to place the stones
         let minDim = Math.min(window.innerHeight, window.innerWidth);
-        let minDistance = Math.max(minDim/3, 200);
+        let minDistance = Math.max(minDim/3, 150);
         stones.push(
           <btn
             style = {{ position: 'absolute', top: window.innerHeight/2 + minDistance * Math.sin(stoneNum*2*Math.PI/size) - minDim/20, right: window.innerWidth/2 + minDistance * Math.cos(stoneNum*2*Math.PI/size) - minDim/20, padding: minDim/20}}
@@ -62,7 +62,7 @@ function App() {
         const isStoneWinning = winningStones.includes(stoneId);
         // get the smallest dimension to place the stones
         let minDim = Math.min(window.innerHeight, window.innerWidth);
-        let minDistance = Math.max(minDim/3, 200);
+        let minDistance = Math.max(minDim/3, 150);
         stones.push(
           <btn
             style = {{ position: 'absolute', top: window.innerHeight/2 + minDistance * Math.sin(stoneNum*2*Math.PI/size) - minDim/20, right: window.innerWidth/2 + minDistance * Math.cos(stoneNum*2*Math.PI/size) - minDim/20, padding: minDim/20}}
