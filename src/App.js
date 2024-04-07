@@ -1025,7 +1025,7 @@ function App() {
         setIsLoading(true);
         await timeout(1000);
         makeCPUMove(newGameState, gameState, removingArr);
-        if (removedStones.length + selectedStones.length !== size) {
+        if (removedStones.length + selectedStones.length != size) {
           setTurnPrompt("Player 1");
           setIsPlayer1Turn(true);
         }
