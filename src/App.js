@@ -452,7 +452,8 @@ function App() {
 
   // After each move, check to see if the game is over.
   useEffect(() => {
-    if (removedStones.length === size) {
+    console.log(removedStones.length);
+    if (removedStones.length == size) {
       setIsGameOver(true);
       setWinningStonesVisible(false);
     } else {
