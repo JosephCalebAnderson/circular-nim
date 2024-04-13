@@ -8,7 +8,6 @@ html {
   min-height: 100vh;
   font-size: calc(10px + 2vmin);
   font-family: DM Sans;
-  background-image: url(./images/bg.webp);
 }
 
 .App-header {
@@ -35,10 +34,6 @@ html {
 
 .basicStone:hover {
   background-color: gray; /* Green */
-}
-
-.bg{
-
 }
 
 .computerDiff {
@@ -71,6 +66,7 @@ html {
   justify-content: center;
   align-items: center;
   height: 100vh;
+  background-image: url(./images/gameplayBG.webp);
 }
 
 .gameOptions{
@@ -124,6 +120,7 @@ html {
   justify-content: space-around;
   align-items: center;
   height: 100vh;
+  background-image: url(./images/simulationBG.jpeg);
 }
 
 .sizeSelector {
@@ -210,6 +207,7 @@ html {
   flex-direction: column;
   justify-content: space-between;
   height: 100vh;
+  background-image: url(./images/homescreenBG.jpeg);
 }
  
  
