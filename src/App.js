@@ -566,30 +566,18 @@ function App() {
         // This will be changed later to better represent a human player.
         perfectProbability = 0.5;
       }
-      // cpu performs better when there are more strings involved.
-      if (computerType === "stringsOnly") {
-        let numStrings = getNumStrings(currentGameState);
-        // Possibly change the numerator to give some more advantage
-        perfectProbability = 2-(2 ** (1-(numStrings/5)));
-      }
-      // cpu perfroms worse when there are more stones remaining
-      if (computerType === "stonesOnly") {
-        let numRemainingStones = getNumRemainingStones(currentGameState);
-        // Possibly change the denomenator to give some more advantage
-        perfectProbability = (3 * (2 ** (-3*numRemainingStones/20))) - 0.5;
-      }
       // cpu performs based on the number of stones and strings
-      if (computerType == "bothEasy") {
+      if (computerType == "Easy") {
         let numStrings = getNumStrings(currentGameState);
         let numRemainingStones = getNumRemainingStones(currentGameState);
         perfectProbability = (2 ** (2-(3*numRemainingStones/20))) - (2 ** (1-(numStrings/5)))  + 0.5;
       }
-      if (computerType === "bothMedium") {
+      if (computerType === "Medium") {
         let numStrings = getNumStrings(currentGameState);
         let numRemainingStones = getNumRemainingStones(currentGameState);
         perfectProbability = (2 ** (2-(3*numRemainingStones/20))) - (2 ** (1-(numStrings/5)))  + 0.75;
       }
-      if (computerType === "bothHard") {
+      if (computerType === "Hard") {
         let numStrings = getNumStrings(currentGameState);
         let numRemainingStones = getNumRemainingStones(currentGameState);
         perfectProbability = (2 ** (2-(3*numRemainingStones/20))) - (2 ** (1-(numStrings/5)))  + 1;
@@ -937,30 +925,18 @@ function App() {
       // This will be changed later to better represent a human player.
       perfectProbability = 0.5;
     }
-    // cpu performs better when there are more strings involved.
-    if (computerType === "stringsOnly") {
-      let numStrings = getNumStrings(currentGameState);
-      // Possibly change the numerator to give some more advantage
-      perfectProbability = 2-(2 ** (1-(numStrings/5)));
-    }
-    // cpu perfroms worse when there are more stones remaining
-    if (computerType === "stonesOnly") {
-      let numRemainingStones = getNumRemainingStones(currentGameState);
-      // Possibly change the denomenator to give some more advantage
-      perfectProbability = (3 * (2 ** (-3*numRemainingStones/20))) - 0.5;
-    }
     // cpu performs based on the number of stones and strings
-    if (computerType == "bothEasy") {
+    if (computerType == "Easy") {
       let numStrings = getNumStrings(currentGameState);
       let numRemainingStones = getNumRemainingStones(currentGameState);
       perfectProbability = (2 ** (2-(3*numRemainingStones/20))) - (2 ** (1-(numStrings/5)))  + 0.5;
     }
-    if (computerType === "bothMedium") {
+    if (computerType === "Medium") {
       let numStrings = getNumStrings(currentGameState);
       let numRemainingStones = getNumRemainingStones(currentGameState);
       perfectProbability = (2 ** (2-(3*numRemainingStones/20))) - (2 ** (1-(numStrings/5)))  + 0.75;
     }
-    if (computerType === "bothHard") {
+    if (computerType === "Hard") {
       let numStrings = getNumStrings(currentGameState);
       let numRemainingStones = getNumRemainingStones(currentGameState);
       perfectProbability = (2 ** (2-(3*numRemainingStones/20))) - (2 ** (1-(numStrings/5)))  + 1;
@@ -1138,11 +1114,9 @@ function App() {
               <option value="Perfect">Perfect</option> 
               <option value="Random">Random</option> 
               <option value="coinflip">Coin Flip</option>
-              <option value="stingsOnly">Strings Only</option> 
-              <option value="stonesOnly">Stones Only</option>
-              <option value="bothEasy">Easy</option>
-              <option value="bothMedium">Medium</option>
-              <option value="bothHard">Hard</option> 
+              <option value="Easy">Easy</option>
+              <option value="Medium">Medium</option>
+              <option value="Hard">Hard</option> 
             </select>
           </div>
           <div className='indvCPU'>
@@ -1151,11 +1125,9 @@ function App() {
             <option value="Perfect">Perfect</option> 
             <option value="Random">Random</option> 
             <option value="coinflip">Coin Flip</option>
-            <option value="stingsOnly">Strings Only</option> 
-            <option value="stonesOnly">Stones Only</option>
-            <option value="bothEasy">Easy</option>
-            <option value="bothMedium">Medium</option>
-            <option value="bothHard">Hard</option> 
+            <option value="Easy">Easy</option>
+            <option value="Medium">Medium</option>
+            <option value="Hard">Hard</option> 
             </select>
           </div>
         </div>
@@ -1193,7 +1165,6 @@ function App() {
           <option value="10">10</option> 
           <option value="100">100</option> 
           <option value="1000">1000</option> 
-          <option value="10000">10000</option>
         </select>
         <btn className = "buttons" onClick = {() => runCPUSimulations()}>Run Simulation</btn>
         <div className = 'stats'>
