@@ -1169,22 +1169,30 @@ function App() {
         <btn className = "buttons" onClick = {() => runCPUSimulations()}>Run Simulation</btn>
         <div className = 'stats'>
           <div className = 'row'>
+            <h2>Game</h2>
             <h2>Statistics</h2>
+            <br></br>
             <h2>CPU1</h2>
             <h2>CPU2</h2>
           </div>
           <div className = 'row'>
-            <h2>Theoretical Win Percentage</h2>
-            <h2>{cpu1WinPercentage}</h2>
-            <h2>{cpu2WinPercentage}</h2>
+            <h2>Theoretical</h2>
+            <h2>Probability</h2>
+            <br></br>
+            <h2>{cpu1WinPercentage.toFixed(10)}</h2>
+            <h2>{cpu2WinPercentage.toFixed(10)}</h2>
           </div>
           <div className = 'row'>
+            <h2>Experimental</h2>
             <h2>Wins</h2>
+            <br></br>
             <h2>{cpu1Wins}</h2>
             <h2>{cpu2Wins}</h2>
           </div>
           <div className = 'row'>
-            <h2>Winning Moves Made</h2>
+            <h2>Winning</h2>
+            <h2>Moves</h2>
+            <br></br>
             <h2>{cpu1Winning}</h2>
             <h2>{cpu2Winning}</h2>
           </div>

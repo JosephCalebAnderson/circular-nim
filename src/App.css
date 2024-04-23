@@ -57,7 +57,7 @@ html {
 }
 
 .dropdown option {
-  background-color: #181821;
+  background-color: transparent;
   color: #fff; 
 }
 
