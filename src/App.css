@@ -56,6 +56,11 @@ html {
   margin-left: 10px;
 }
 
+.dropdown option {
+  background-color: #181821;
+  color: #fff; 
+}
+
 .footer{
   width: 100%;
 }
@@ -104,6 +109,10 @@ html {
 
 .selectedStone:hover {
   background-color: green;
+}
+
+.select-items {
+  background-color: #212121;
 }
 
 .selection {
