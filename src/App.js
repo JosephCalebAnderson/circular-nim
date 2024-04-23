@@ -1087,7 +1087,7 @@ function App() {
         <div className='sizeSelector'>
           <h3>Circle Size:</h3>
           <select className = "dropdown" value={size} onChange={(event) => setSize(event.target.value)}>
-            <option value="4">4</option> 
+            <option background-color = 'black' value="4">4</option> 
             <option value="5">5</option> 
             <option value="6">6</option> 
             <option value="7">7</option>
@@ -1162,9 +1162,9 @@ function App() {
       {isSimulation && !isPreGame && <div className='simulation'>
         <h3>Number of Games:</h3>
         <select className = "dropdown" value={gameNum} onChange={(event) => setGameNum(event.target.value)}>
-          <option value="10">10</option> 
-          <option value="100">100</option> 
-          <option value="1000">1000</option> 
+          <option background-color='transparent' value="10">10</option> 
+          <option background-color='transparent' value="100">100</option> 
+          <option background-color='transparent' value="1000">1000</option> 
         </select>
         <btn className = "buttons" onClick = {() => runCPUSimulations()}>Run Simulation</btn>
         <div className = 'stats'>
