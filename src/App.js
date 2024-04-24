@@ -1087,7 +1087,7 @@ function App() {
         <div className='sizeSelector'>
           <h3>Circle Size:</h3>
           <select className = "dropdown" value={size} onChange={(event) => setSize(event.target.value)}>
-            <option background-color = 'black' value="4">4</option> 
+            <option value="4">4</option> 
             <option value="5">5</option> 
             <option value="6">6</option> 
             <option value="7">7</option>
