@@ -1,18 +1,18 @@
 {
   "files": {
-    "main.css": "/circular-nim/static/css/main.decddb28.css",
-    "main.js": "/circular-nim/static/js/main.3688b60c.js",
+    "main.css": "/circular-nim/static/css/main.a8f81af2.css",
+    "main.js": "/circular-nim/static/js/main.b456cfc9.js",
     "static/js/592.fa9495c9.chunk.js": "/circular-nim/static/js/592.fa9495c9.chunk.js",
     "static/media/simulationBG.jpeg": "/circular-nim/static/media/simulationBG.b59698f7c6b2baff1477.jpeg",
     "static/media/gameplayBG.webp": "/circular-nim/static/media/gameplayBG.b2347a6c02437371bba1.webp",
     "static/media/homescreenBG.jpeg": "/circular-nim/static/media/homescreenBG.98fbf01062e21d1c034d.jpeg",
     "index.html": "/circular-nim/index.html",
-    "main.decddb28.css.map": "/circular-nim/static/css/main.decddb28.css.map",
-    "main.3688b60c.js.map": "/circular-nim/static/js/main.3688b60c.js.map",
+    "main.a8f81af2.css.map": "/circular-nim/static/css/main.a8f81af2.css.map",
+    "main.b456cfc9.js.map": "/circular-nim/static/js/main.b456cfc9.js.map",
     "592.fa9495c9.chunk.js.map": "/circular-nim/static/js/592.fa9495c9.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.decddb28.css",
-    "static/js/main.3688b60c.js"
+    "static/css/main.a8f81af2.css",
+    "static/js/main.b456cfc9.js"
   ]
 }
