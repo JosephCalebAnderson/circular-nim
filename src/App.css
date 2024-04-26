@@ -61,6 +61,10 @@ html {
   color: #fff; 
 }
 
+.dropdown option:hover {
+  background-color: gray;
+}
+
 .footer{
   width: 100%;
 }
